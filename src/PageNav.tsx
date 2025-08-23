@@ -4,23 +4,23 @@ import { useHref, useLinkClickHandler, useLocation, useMatches } from "react-rou
 import { routes } from "./routes";
 import {
   User,
-  BarChart3,
   Link,
-  Grid3X3,
   Users,
   FolderOpen,
   Home,
   Lock,
-  X
+  TabletSmartphone,
+  X,
+  LayoutGrid
 } from "lucide-react";
 
 // Navigation icons using Lucide React
 const NavIcons = {
   "personal-info": <User className="w-5 h-5" />,
-  "device-activity": <BarChart3 className="w-5 h-5" />,
+  "device-activity": <TabletSmartphone className="w-5 h-5" />,
   "linked-accounts": <Link className="w-5 h-5" />,
   "security": <Lock className="w-5 h-5" />,
-  "applications": <Grid3X3 className="w-5 h-5" />,
+  "applications": <LayoutGrid className="w-5 h-5" />,
   "groups": <Users className="w-5 h-5" />,
   "resources": <FolderOpen className="w-5 h-5" />,
   "myPage": <Home className="w-5 h-5" />,
@@ -145,11 +145,11 @@ export const PageNav = ({ isMobileMenuOpen = false, onCloseMobileMenu, realmName
 
       {/* Sidebar Navigation */}
       <nav className={`
-        p-4 transition-transform duration-300 ease-in-out
-        md:relative md:translate-x-0 md:block
+        transition-transform duration-300 ease-in-out overflow-hidden
+        md:relative md:translate-x-0 md:block md:h-[calc(100vh-6.5rem)] md:p-4
         ${isMobileMenuOpen
-          ? 'fixed inset-y-0 left-0 z-50 w-64 bg-white translate-x-0 shadow-lg'
-          : 'fixed inset-y-0 left-0 z-50 w-64 bg-white -translate-x-full md:translate-x-0'
+          ? 'fixed inset-y-0 left-0 z-50 w-64 bg-white translate-x-0 shadow-lg h-screen p-4'
+          : 'fixed inset-y-0 left-0 z-50 w-64 bg-white -translate-x-full md:translate-x-0 h-screen p-4'
         }
       `}>
         {/* Mobile header with realm name and close button */}
@@ -175,17 +175,30 @@ export const PageNav = ({ isMobileMenuOpen = false, onCloseMobileMenu, realmName
           <div className="border-b border-gray-200 mb-4 md:hidden"></div>
         )}
 
-        <div className="space-y-1">
-          {navigationItems.map(({ path }) => (
-            <div key={path} onClick={closeMobileMenu}>
-              <NavLink
-                path={path!}
-                icon={getNavIcon(path!)}
-              >
-                {getNavLabel(path!, t)}
-              </NavLink>
+        <div className="flex flex-col h-full overflow-hidden">
+          <div className="flex-1 overflow-y-auto min-h-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div className="space-y-1 pr-1">
+              {navigationItems.map(({ path }) => (
+                <div key={path} onClick={closeMobileMenu}>
+                  <NavLink
+                    path={path!}
+                    icon={getNavIcon(path!)}
+                  >
+                    {getNavLabel(path!, t)}
+                  </NavLink>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Footer Links */}
+          <div className="flex-shrink-0 pt-4 border-t border-gray-200 mt-2">
+            <div className="flex justify-evenly text-xs text-gray-500">
+              <a href="#" className="hover:text-gray-700 transition-colors py-1">Privacy</a>
+              <a href="#" className="hover:text-gray-700 transition-colors py-1">Terms</a>
+              <a href="#" className="hover:text-gray-700 transition-colors py-1">Help</a>
+            </div>
+          </div>
         </div>
       </nav>
     </>

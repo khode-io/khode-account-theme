@@ -119,7 +119,7 @@ function App() {
         <div className="flex py-4">
           {/* Sidebar - Hidden on mobile, shown on desktop */}
           <div className="hidden md:block w-64 flex-shrink-0">
-            <div className="sticky top-20 h-fit overflow-hidden">
+            <div className="sticky top-20">
               <PageNav />
             </div>
           </div>

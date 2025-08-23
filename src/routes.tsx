@@ -13,17 +13,17 @@ import { Applications } from "./pages/Applications";
 import { Groups } from "./pages/Groups";
 
 export const DeviceActivityRoute: RouteObject = {
-  path: "account-security/deviceActivity",
+  path: "device-activity",
   element: <DeviceActivity />,
 };
 
 export const LinkedAccountsRoute: RouteObject = {
-  path: "account-security/linkedAccounts",
+  path: "linked-accounts",
   element: <LinkedAccounts />,
 };
 
 export const SigningInRoute: RouteObject = {
-  path: "account-security/signingIn",
+  path: "security",
   element: <SigningIn />,
 };
 
@@ -48,7 +48,7 @@ export const IndexRoute: IndexRouteObject = {
 };
 
 export const PersonalInfoRoute: RouteObject = {
-  path: "personalInfo",
+  path: "personal-info",
   element: <PersonalInfo />,
 };
 
@@ -64,9 +64,9 @@ export const RootRoute: RouteObject = {
   children: [
     IndexRoute,
     PersonalInfoRoute,
-    DeviceActivityRoute,
-    LinkedAccountsRoute,
     SigningInRoute,
+    LinkedAccountsRoute,
+    DeviceActivityRoute,
     ApplicationsRoute,
     // GroupsRoute,
     // ResourcesRoute,

@@ -6,24 +6,24 @@ import {
   User,
   BarChart3,
   Link,
-  LogIn,
   Grid3X3,
   Users,
   FolderOpen,
   Home,
+  Lock,
   X
 } from "lucide-react";
 
 // Navigation icons using Lucide React
 const NavIcons = {
-  personalInfo: <User className="w-5 h-5" />,
-  deviceActivity: <BarChart3 className="w-5 h-5" />,
-  linkedAccounts: <Link className="w-5 h-5" />,
-  signingIn: <LogIn className="w-5 h-5" />,
-  applications: <Grid3X3 className="w-5 h-5" />,
-  groups: <Users className="w-5 h-5" />,
-  resources: <FolderOpen className="w-5 h-5" />,
-  myPage: <Home className="w-5 h-5" />,
+  "personal-info": <User className="w-5 h-5" />,
+  "device-activity": <BarChart3 className="w-5 h-5" />,
+  "linked-accounts": <Link className="w-5 h-5" />,
+  "security": <Lock className="w-5 h-5" />,
+  "applications": <Grid3X3 className="w-5 h-5" />,
+  "groups": <Users className="w-5 h-5" />,
+  "resources": <FolderOpen className="w-5 h-5" />,
+  "myPage": <Home className="w-5 h-5" />,
 };
 
 type NavLinkProps = {
@@ -51,10 +51,11 @@ const NavLink = ({ path, children, icon }: NavLinkProps) => {
         (match as any)?.route?.index === true;
     }
 
-    // Handle personalInfo as regular route
-    if (path === 'personalInfo') {
-      return routePath.endsWith('/personalInfo') ||
-        routePath.includes('personalInfo');
+    // Handle personal-info as regular route and index route
+    if (path === 'personal-info') {
+      return routePath.endsWith('/personal-info') ||
+        routePath.includes('personal-info') ||
+        (match as any)?.route?.index === true;
     }
 
     // Handle nested paths like account-security/signingIn
@@ -98,19 +99,19 @@ const getNavIcon = (path: string) => {
 
   // Then handle nested paths
   const key = path.includes('/') ? path.split('/').pop() : path;
-  return NavIcons[key as keyof typeof NavIcons] || NavIcons.personalInfo;
+  return NavIcons[key as keyof typeof NavIcons] || NavIcons["personal-info"];
 };
 
 const getNavLabel = (path: string, t: (key: string) => string) => {
   const labels: Record<string, string> = {
-    personalInfo: 'Personal Info',
-    deviceActivity: 'Device Activity',
-    linkedAccounts: 'Linked Accounts',
-    signingIn: 'Signing In',
-    applications: 'Applications',
-    groups: 'Groups',
-    resources: 'Resources',
-    myPage: 'My Page',
+    "personal-info": 'Personal Info',
+    "security": 'Security',
+    "device-activity": 'Device Activity',
+    "linked-accounts": 'Linked Accounts',
+    "applications": 'Applications',
+    "groups": 'Groups',
+    "resources": 'Resources',
+    "myPage": 'My Page',
   };
 
   const key = path.includes('/') ? path.split('/').pop() : path;

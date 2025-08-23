@@ -87,38 +87,29 @@ jobs:
         fi
         
     - name: Create Release
-      id: create-release
-      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag-name.outputs.tag }}
-        release_name: Release ${{ steps.tag-name.outputs.tag }}
-        body: |
-          ## Keycloak Account Theme Release ${{ steps.tag-name.outputs.tag }}
-          
-          ### Installation
-          1. Download the `khode-account-${{ steps.project-version.outputs.version }}.jar` file
-          2. Copy it to your Keycloak server's `providers` directory
-          3. Restart your Keycloak server
-          4. The custom account theme will be available in your realm settings
-          
-          ### Changes
-          - Built from commit: ${{ github.sha }}
-          - Project version: ${{ steps.project-version.outputs.version }}
-          
-        draft: false
-        prerelease: false
+      run: |
+        # Create release notes
+        cat > release_notes.md << 'EOF'
+        ## Keycloak Account Theme Release ${{ steps.tag-name.outputs.tag }}
         
-    - name: Upload JAR to Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ${{ steps.find-jar.outputs.jar-file }}
-        asset_name: khode-account-${{ steps.project-version.outputs.version }}.jar
-        asset_content_type: application/java-archive
+        ### Installation
+        1. Download the `khode-account-${{ steps.project-version.outputs.version }}.jar` file
+        2. Copy it to your Keycloak server's `providers` directory
+        3. Restart your Keycloak server
+        4. The custom account theme will be available in your realm settings
+        
+        ### Changes
+        - Built from commit: ${{ github.sha }}
+        - Project version: ${{ steps.project-version.outputs.version }}
+        EOF
+        
+        # Create release with GitHub CLI
+        gh release create ${{ steps.tag-name.outputs.tag }} \
+          --title "Release ${{ steps.tag-name.outputs.tag }}" \
+          --notes-file release_notes.md \
+          ${{ steps.find-jar.outputs.jar-file }}#khode-account-${{ steps.project-version.outputs.version }}.jar
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4

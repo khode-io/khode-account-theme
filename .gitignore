@@ -36,6 +36,9 @@ build/
 *.swo
 *~
 
+# Keep GitHub workflows
+!.github/
+
 # OS generated files
 .DS_Store
 .DS_Store?

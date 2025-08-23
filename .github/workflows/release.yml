@@ -105,11 +105,30 @@ jobs:
         - Project version: ${{ steps.project-version.outputs.version }}
         EOF
         
-        # Create release with GitHub CLI
-        gh release create ${{ steps.tag-name.outputs.tag }} \
-          --title "Release ${{ steps.tag-name.outputs.tag }}" \
-          --notes-file release_notes.md \
-          ${{ steps.find-jar.outputs.jar-file }}#khode-account-${{ steps.project-version.outputs.version }}.jar
+        # Check if release already exists
+        if gh release view ${{ steps.tag-name.outputs.tag }} >/dev/null 2>&1; then
+          echo "Release ${{ steps.tag-name.outputs.tag }} already exists, updating it..."
+          
+          # Update release notes
+          gh release edit ${{ steps.tag-name.outputs.tag }} --notes-file release_notes.md
+          
+          # Remove existing JAR assets (if any)
+          gh release view ${{ steps.tag-name.outputs.tag }} --json assets --jq '.assets[].name' | grep '\.jar$' | while read asset; do
+            echo "Removing existing asset: $asset"
+            gh release delete-asset ${{ steps.tag-name.outputs.tag }} "$asset" --yes || true
+          done
+          
+          # Upload new JAR asset
+          gh release upload ${{ steps.tag-name.outputs.tag }} \
+            ${{ steps.find-jar.outputs.jar-file }}#khode-account-${{ steps.project-version.outputs.version }}.jar
+        else
+          echo "Creating new release ${{ steps.tag-name.outputs.tag }}..."
+          # Create release with GitHub CLI
+          gh release create ${{ steps.tag-name.outputs.tag }} \
+            --title "Release ${{ steps.tag-name.outputs.tag }}" \
+            --notes-file release_notes.md \
+            ${{ steps.find-jar.outputs.jar-file }}#khode-account-${{ steps.project-version.outputs.version }}.jar
+        fi
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4

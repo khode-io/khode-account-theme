@@ -8,9 +8,9 @@ import {
     deleteConsent,
     ClientRepresentation
 } from '@keycloak/keycloak-account-ui';
-import { Page, Button, CardSkeleton } from '../components';
+import { Page, Button, TextSkeleton, CardSkeleton } from '../components';
 import type { AccountEnvironment } from '@keycloak/keycloak-account-ui';
-import { FileText, CheckCircle, XCircle, Info, Trash2 } from 'lucide-react';
+import { FileText, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 
 export const Applications: React.FC = () => {
     const { t } = useTranslation();
@@ -65,16 +65,7 @@ export const Applications: React.FC = () => {
         }
     };
 
-    const formatDate = (timestamp: number) => {
-        if (!timestamp) return t("applications.never", "Never");
-        return new Date(timestamp).toLocaleDateString(undefined, {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
+
 
     const getApplicationIcon = (application: ClientRepresentation) => {
         if (application.logoUri) {
@@ -124,148 +115,84 @@ export const Applications: React.FC = () => {
                 <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                     {isDataLoading ? (
                         <>
+                            {/* Header Skeleton */}
+                            <div className="mb-6">
+                                <TextSkeleton width="120px" height="28px" />
+                                <div className="mt-2">
+                                    <TextSkeleton width="380px" height="14px" />
+                                </div>
+                            </div>
+
                             {/* Applications List Skeleton */}
                             <div className="space-y-4">
-                                <CardSkeleton showAvatar={true} lines={3} showActions={true} />
+                                <CardSkeleton showAvatar={true} lines={2} showActions={true} />
+                                <CardSkeleton showAvatar={true} lines={1} showActions={true} />
+                                <CardSkeleton showAvatar={true} lines={2} showActions={true} />
                             </div>
                         </>
                     ) : (
                         <>
+                            {/* Real Header */}
+                            <div className="border-l-4 border-blue-600 pl-4 mb-6">
+                                <h2 className="text-xl font-semibold text-gray-900">
+                                    {t("applications.title", "Applications")}
+                                </h2>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    {t("applications.description", "Manage applications that have access to your account")}
+                                </p>
+                            </div>
+
                             {/* Real Applications List */}
-                            {applications.length === 0 ? (
-                                <div className="text-center py-12">
-                                    <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                        {t("applications.empty.title", "No applications")}
-                                    </h3>
-                                    <p className="text-gray-500">
-                                        {t("applications.empty.description", "You haven't granted access to any applications yet.")}
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    {applications.map((application) => (
-                                        <div key={application.clientId} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex items-start space-x-4 flex-1">
+                            <div className="space-y-4">
+                                {applications.length > 0 ? (
+                                    applications.map((application) => (
+                                        <div
+                                            key={application.clientId}
+                                            className="p-4 rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-4">
                                                     {/* Application Icon */}
-                                                    <div className="flex-shrink-0">
+                                                    <div className="p-3 rounded-xl border bg-blue-50 border-blue-200">
                                                         {getApplicationIcon(application)}
                                                     </div>
 
                                                     {/* Application Info */}
                                                     <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center space-x-3 mb-2">
-                                                            <h3 className="text-lg font-medium text-gray-900 truncate">
+                                                        <div className="flex items-center space-x-2 mb-1">
+                                                            <h3 className="text-lg font-medium text-gray-900">
                                                                 {application.clientName || application.clientId}
                                                             </h3>
                                                             {getStatusBadge(application)}
                                                         </div>
 
-                                                        {application.description && (
-                                                            <p className="text-sm text-gray-600 mb-3">
-                                                                {application.description}
-                                                            </p>
+                                                        <p className="text-sm text-gray-600">
+                                                            {t("applications.clientId", "Client ID")}: <span className="font-mono">{application.clientId}</span>
+                                                        </p>
+
+                                                        {application.effectiveUrl && (
+                                                            <>
+                                                                {/* Desktop URL */}
+                                                                <p className="hidden md:block text-sm text-gray-600">
+                                                                    {t("applications.url", "URL")}: <a href={application.effectiveUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">{application.effectiveUrl}</a>
+                                                                </p>
+                                                                {/* Mobile URL */}
+                                                                <p className="block md:hidden text-sm text-gray-600">
+                                                                    {t("applications.url", "URL")}: <span className="text-blue-600 break-all">{application.effectiveUrl}</span>
+                                                                </p>
+                                                            </>
                                                         )}
-
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                                            <div>
-                                                                <span className="font-medium text-gray-700">
-                                                                    {t("applications.clientId", "Client ID")}:
-                                                                </span>
-                                                                <span className="ml-2 text-gray-600 font-mono">
-                                                                    {application.clientId}
-                                                                </span>
-                                                            </div>
-
-                                                            {application.effectiveUrl && (
-                                                                <div>
-                                                                    <span className="font-medium text-gray-700">
-                                                                        {t("applications.url", "URL")}:
-                                                                    </span>
-                                                                    <a
-                                                                        href={application.effectiveUrl}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="ml-2 text-blue-600 hover:text-blue-800 truncate"
-                                                                    >
-                                                                        {application.effectiveUrl}
-                                                                    </a>
-                                                                </div>
-                                                            )}
-
-                                                            {application.consent && (
-                                                                <div>
-                                                                    <span className="font-medium text-gray-700">
-                                                                        {t("applications.lastAccess", "Last access")}:
-                                                                    </span>
-                                                                    <span className="ml-2 text-gray-600">
-                                                                        {formatDate(application.consent.lastUpdatedDate)}
-                                                                    </span>
-                                                                </div>
-                                                            )}
-
-                                                            {application.consent && (
-                                                                <div>
-                                                                    <span className="font-medium text-gray-700">
-                                                                        {t("applications.grantedOn", "Granted on")}:
-                                                                    </span>
-                                                                    <span className="ml-2 text-gray-600">
-                                                                        {formatDate(application.consent.createdDate)}
-                                                                    </span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-
-                                                        {/* Granted Permissions */}
-                                                        {application.consent?.grantedScopes && application.consent.grantedScopes.length > 0 && (
-                                                            <div className="mt-4">
-                                                                <h4 className="text-sm font-medium text-gray-700 mb-2">
-                                                                    {t("applications.permissions", "Granted permissions")}:
-                                                                </h4>
-                                                                <div className="flex flex-wrap gap-2">
-                                                                    {application.consent.grantedScopes.map((scope, index) => (
-                                                                        <span
-                                                                            key={index}
-                                                                            className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-blue-100 text-blue-800"
-                                                                        >
-                                                                            {scope.displayTest || scope.name}
-                                                                        </span>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Additional Features */}
-                                                        <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-500">
-                                                            {application.offlineAccess && (
-                                                                <span className="flex items-center">
-                                                                    <CheckCircle className="w-3 h-3 mr-1" />
-                                                                    {t("applications.offlineAccess", "Offline access")}
-                                                                </span>
-                                                            )}
-                                                            {application.userConsentRequired && (
-                                                                <span className="flex items-center">
-                                                                    <Info className="w-3 h-3 mr-1" />
-                                                                    {t("applications.consentRequired", "Consent required")}
-                                                                </span>
-                                                            )}
-                                                        </div>
                                                     </div>
                                                 </div>
 
                                                 {/* Actions */}
-                                                <div className="flex-shrink-0 ml-4">
+                                                <div className="flex-shrink-0">
                                                     {application.consent?.grantedScopes && application.consent.grantedScopes.length > 0 && (
                                                         <Button
                                                             variant="outline"
-                                                            size="sm"
                                                             onClick={() => handleRevokeConsent(application)}
-                                                            disabled={isLoading}
+                                                            loading={isLoading}
+                                                            loadingText={t("applications.revoking", "Revoking...")}
                                                             leftIcon={<Trash2 className="w-4 h-4" />}
                                                             className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
                                                         >
@@ -275,9 +202,23 @@ export const Applications: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
+                                    ))
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                            {t("applications.empty.title", "No applications")}
+                                        </h3>
+                                        <p className="text-gray-500">
+                                            {t("applications.empty.description", "You haven't granted access to any applications yet.")}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
                         </>
                     )}
                 </div>

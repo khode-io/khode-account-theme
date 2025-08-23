@@ -176,7 +176,7 @@ export const PageNav = ({ isMobileMenuOpen = false, onCloseMobileMenu, realmName
         )}
 
         <div className="flex flex-col h-full overflow-hidden">
-          <div className="flex-1 overflow-y-auto min-h-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
             <div className="space-y-1 pr-1">
               {navigationItems.map(({ path }) => (
                 <div key={path} onClick={closeMobileMenu}>

@@ -7,7 +7,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
-import { Page } from "../components";
+import { Page, Button } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,7 +15,6 @@ import {
     Smartphone,
     Monitor,
     Apple,
-    Loader2,
     LogOut,
     MapPin,
     Clock,
@@ -159,23 +158,16 @@ export const DeviceActivity = () => {
 
                         {/* Sign out all sessions button */}
                         {devices.length > 0 && (
-                            <button
+                            <Button
+                                variant="outline"
                                 onClick={handleSignOutAllSessions}
-                                disabled={isLoading}
-                                className="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-xl text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                loading={isLoading}
+                                loadingText={t("deviceActivity.signingOut", "Signing out...")}
+                                leftIcon={<LogOut className="w-4 h-4" />}
+                                className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
                             >
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4 text-red-600" />
-                                        {t("deviceActivity.signingOut", "Signing out...")}
-                                    </>
-                                ) : (
-                                    <>
-                                        <LogOut className="w-4 h-4 mr-2" />
-                                        {t("deviceActivity.signOutAll", "Sign out all sessions")}
-                                    </>
-                                )}
-                            </button>
+                                {t("deviceActivity.signOutAll", "Sign out all sessions")}
+                            </Button>
                         )}
                     </div>
 
@@ -262,14 +254,16 @@ export const DeviceActivity = () => {
                                                                                 {t("deviceActivity.current", "Current")}
                                                                             </span>
                                                                         ) : (
-                                                                            <button
+                                                                            <Button
+                                                                                variant="ghost"
+                                                                                size="sm"
                                                                                 onClick={() => handleSignOutSession(session.id)}
                                                                                 disabled={isLoading}
-                                                                                className="text-red-600 hover:text-red-800 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                                className="text-red-600 hover:text-red-800 hover:bg-red-50"
                                                                                 title={t("deviceActivity.signOutSession", "Sign out this session")}
                                                                             >
                                                                                 {t("deviceActivity.signOut", "Sign out")}
-                                                                            </button>
+                                                                            </Button>
                                                                         )}
                                                                     </div>
                                                                 </div>
@@ -288,23 +282,17 @@ export const DeviceActivity = () => {
                                         {/* Actions */}
                                         {!device.current && (
                                             <div className="flex-shrink-0">
-                                                <button
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
                                                     onClick={() => handleSignOutDevice(device)}
-                                                    disabled={isLoading}
-                                                    className="inline-flex items-center px-3 py-2 border border-red-300 text-sm font-medium rounded-xl text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                    loading={isLoading}
+                                                    loadingText={t("deviceActivity.signingOut", "Signing out...")}
+                                                    leftIcon={<LogOut className="w-4 h-4" />}
+                                                    className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
                                                 >
-                                                    {isLoading ? (
-                                                        <>
-                                                            <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4 text-red-600" />
-                                                            {t("deviceActivity.signingOut", "Signing out...")}
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <LogOut className="w-4 h-4 mr-2" />
-                                                            {t("deviceActivity.signOutDevice", "Sign out device")}
-                                                        </>
-                                                    )}
-                                                </button>
+                                                    {t("deviceActivity.signOutDevice", "Sign out device")}
+                                                </Button>
                                             </div>
                                         )}
                                     </div>

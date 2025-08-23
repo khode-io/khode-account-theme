@@ -7,7 +7,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
-import { Page } from "../components";
+import { Page, Button } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -165,13 +165,14 @@ export const SigningIn = () => {
                                                         )}
                                                     </div>
                                                 </div>
-                                                <button
+                                                <Button
+                                                    variant="primary"
+                                                    size="sm"
                                                     onClick={() => handleCreateCredential(container.createAction)}
-                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                                    leftIcon={<Plus className="w-4 h-4" />}
                                                 >
-                                                    <Plus className="w-4 h-4 mr-2" />
                                                     {t("signingIn.add", "Add")}
-                                                </button>
+                                                </Button>
                                             </div>
                                         )}
 
@@ -203,25 +204,29 @@ export const SigningIn = () => {
                                                         <div className="flex items-center space-x-2">
                                                             {/* Update Button */}
                                                             {container.updateAction && (
-                                                                <button
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
                                                                     onClick={() => handleUpdateCredential(container.updateAction)}
-                                                                    className="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                                                                    leftIcon={<Edit className="w-3 h-3" />}
+                                                                    className="text-xs"
                                                                 >
-                                                                    <Edit className="w-3 h-3 mr-1" />
                                                                     {t("signingIn.update", "Update")}
-                                                                </button>
+                                                                </Button>
                                                             )}
 
                                                             {/* Remove Button */}
                                                             {container.removeable && (
-                                                                <button
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
                                                                     onClick={() => handleRemoveCredential(credentialMeta)}
                                                                     disabled={isLoading}
-                                                                    className="inline-flex items-center px-2 py-1 border border-red-300 text-xs font-medium rounded-xl text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                                                    leftIcon={<Trash2 className="w-3 h-3" />}
+                                                                    className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500 text-xs"
                                                                 >
-                                                                    <Trash2 className="w-3 h-3 mr-1" />
                                                                     {t("signingIn.remove", "Remove")}
-                                                                </button>
+                                                                </Button>
                                                             )}
                                                         </div>
                                                     </div>

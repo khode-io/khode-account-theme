@@ -1,6 +1,5 @@
 import {
     AccountEnvironment,
-    Page,
     CredentialContainer,
     CredentialMetadataRepresentation,
     getCredentials,
@@ -8,6 +7,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
+import { Page } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -113,6 +113,7 @@ export const SigningIn = () => {
         <Page
             title={t("signingIn.title", "Security Settings")}
             description={t("signingIn.description", "Manage your authentication methods and security settings")}
+            className="mt-4"
         >
             <div className={`space-y-6 async-content ${credentials.length > 0 ? 'loaded' : ''}`}>
                 {categoryOrder.map((categoryKey) => {

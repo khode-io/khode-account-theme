@@ -1,6 +1,5 @@
 import {
     AccountEnvironment,
-    Page,
     UserRepresentation,
     UserProfileAttributeMetadata,
     getPersonalInfo,
@@ -9,6 +8,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
+import { Page } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -148,6 +148,7 @@ export const PersonalInfo = () => {
         <Page
             title={t("personalInfo.title", "Personal info")}
             description={t("personalInfo.description", "Manage your basic information")}
+            className="mt-4"
         >
             <div className="space-y-6">
 

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    Page,
     useEnvironment,
     getGroups,
     Group
 } from '@keycloak/keycloak-account-ui';
+import { Page } from '../components';
 import type { AccountEnvironment } from '@keycloak/keycloak-account-ui';
 import { Users, XCircle, Info, CheckCircle, ChevronRight, User } from 'lucide-react';
 

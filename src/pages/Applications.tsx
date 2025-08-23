@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    Page,
     useEnvironment,
     useAlerts,
     usePromise,
@@ -9,6 +8,7 @@ import {
     deleteConsent,
     ClientRepresentation
 } from '@keycloak/keycloak-account-ui';
+import { Page } from '../components';
 import type { AccountEnvironment } from '@keycloak/keycloak-account-ui';
 import { FileText, CheckCircle, XCircle, Info, Trash2 } from 'lucide-react';
 
@@ -118,7 +118,7 @@ export const Applications: React.FC = () => {
     }
 
     return (
-        <Page title={t("applications.title", "Applications")} description="">
+        <Page className="mt-4">
             <div className={`space-y-6 async-content ${!isLoading ? 'loaded' : ''}`}>
                 {/* Header */}
                 <div className="border-l-4 border-blue-600 pl-4 mb-6">

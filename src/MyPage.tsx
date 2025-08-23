@@ -1,6 +1,5 @@
 import {
   AccountEnvironment,
-  Page,
   UserRepresentation,
   getPersonalInfo,
   savePersonalInfo,
@@ -8,6 +7,7 @@ import {
   useEnvironment,
   usePromise,
 } from "@keycloak/keycloak-account-ui";
+import { Page } from "./components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 

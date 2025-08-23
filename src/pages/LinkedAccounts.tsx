@@ -1,6 +1,5 @@
 import {
     AccountEnvironment,
-    Page,
     LinkedAccountRepresentation,
     getLinkedAccounts,
     linkAccount,
@@ -9,6 +8,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
+import { Page } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -148,6 +148,7 @@ export const LinkedAccounts = () => {
         <Page
             title={t("linkedAccounts.title", "Linked accounts")}
             description={t("linkedAccounts.description", "Manage your linked social and identity provider accounts")}
+            className="mt-4"
         >
             <div className="space-y-6">
                 {/* Header Section */}

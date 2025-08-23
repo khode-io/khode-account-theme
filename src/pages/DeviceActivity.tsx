@@ -1,6 +1,5 @@
 import {
     AccountEnvironment,
-    Page,
     DeviceRepresentation,
     getDevices,
     deleteSession,
@@ -8,6 +7,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
+import { Page } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -142,6 +142,7 @@ export const DeviceActivity = () => {
         <Page
             title={t("deviceActivity.title", "Device activity")}
             description={t("deviceActivity.description", "Monitor and manage your signed-in devices")}
+            className="mt-4"
         >
             <div className="space-y-6">
                 {/* Header Section */}

@@ -8,7 +8,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
-import { Page, TextField, Button } from "../components";
+import { Page, TextField, Button, TextSkeleton, RoundedSkeleton } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,8 +18,16 @@ export const PersonalInfo = () => {
     const [personalInfo, setPersonalInfo] = useState<UserRepresentation>();
     const { addAlert, addError } = useAlerts();
     const [isLoading, setIsLoading] = useState(false);
+    const [isDataLoading, setIsDataLoading] = useState(true);
 
-    usePromise((signal) => getPersonalInfo({ signal, context }), setPersonalInfo);
+    usePromise(
+        async (signal) => {
+            const data = await getPersonalInfo({ signal, context });
+            setIsDataLoading(false);
+            return data;
+        },
+        setPersonalInfo
+    );
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -131,94 +139,160 @@ export const PersonalInfo = () => {
         <Page
             title={t("personalInfo.title", "Personal info")}
             description={t("personalInfo.description", "Manage your basic information")}
-            className="mt-4"
+            className="mt-4 p-4"
         >
             <div className="space-y-6">
 
                 {/* General Section */}
                 <div id="general" className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                    <div className="border-l-4 border-blue-600 pl-4 mb-6">
-                        <h2 className="text-xl font-semibold text-gray-900">
-                            {t("personalInfo.general", "General")}
-                        </h2>
-                    </div>
-
-                    <form onSubmit={onSubmit} className="space-y-6">
-                        {/* Dynamic Fields based on User Profile Configuration */}
-                        {userAttributes.length > 0 ? (
-                            userAttributes.map((attribute: UserProfileAttributeMetadata) => renderFormField(attribute))
-                        ) : (
-                            // Fallback to basic fields if no metadata available
-                            <>
-                                {/* Username Field */}
-                                <TextField
-                                    label={t("username", "Username")}
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    value={personalInfo?.username || ""}
-                                    required
-                                    readOnly
-                                    helpText={t("personalInfo.usernameHelp", "Username cannot be changed")}
-                                    layout="horizontal"
-                                />
-
-                                {/* Email Field */}
-                                <TextField
-                                    label={t("email", "Email")}
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={personalInfo?.email || ""}
-                                    required
-                                    onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
-                                    layout="horizontal"
-                                />
-
-                                {/* First Name Field */}
-                                <TextField
-                                    label={t("firstName", "First name")}
-                                    type="text"
-                                    id="firstName"
-                                    name="firstName"
-                                    value={personalInfo?.firstName || ""}
-                                    required
-                                    onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })}
-                                    layout="horizontal"
-                                />
-
-                                {/* Last Name Field */}
-                                <TextField
-                                    label={t("lastName", "Last name")}
-                                    type="text"
-                                    id="lastName"
-                                    name="lastName"
-                                    value={personalInfo?.lastName || ""}
-                                    required
-                                    onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
-                                    layout="horizontal"
-                                />
-                            </>
-                        )}
-
-                        {/* Action Buttons */}
-                        <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-                            <div className="flex items-center">
-                                <Button
-                                    type="submit"
-                                    variant="primary"
-                                    loading={isLoading}
-                                    loadingText={t("saving", "Saving...")}
-                                >
-                                    {t("save", "Save")}
-                                </Button>
+                    {isDataLoading ? (
+                        <>
+                            {/* General Header Skeleton */}
+                            <div className="mb-6">
+                                <TextSkeleton width="80px" height="28px" />
                             </div>
 
-                            <div className="text-xs text-gray-500">
-                                * {t("personalInfo.requiredFields", "Required fields")}
+                            {/* Form Skeleton */}
+                            <div className="space-y-6">
+                                {/* Username Field Skeleton */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                    <div className="md:col-span-1 pt-2">
+                                        <TextSkeleton width="80px" height="14px" />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <RoundedSkeleton height="42px" className="w-full" />
+                                    </div>
+                                </div>
+
+                                {/* Email Field Skeleton */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                    <div className="md:col-span-1 pt-2">
+                                        <TextSkeleton width="50px" height="14px" />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <RoundedSkeleton height="42px" className="w-full" />
+                                    </div>
+                                </div>
+
+                                {/* First Name Field Skeleton */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                    <div className="md:col-span-1 pt-2">
+                                        <TextSkeleton width="85px" height="14px" />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <RoundedSkeleton height="42px" className="w-full" />
+                                    </div>
+                                </div>
+
+                                {/* Last Name Field Skeleton */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                    <div className="md:col-span-1 pt-2">
+                                        <TextSkeleton width="80px" height="14px" />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <RoundedSkeleton height="42px" className="w-full" />
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons Skeleton */}
+                                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                                    <div className="flex items-center">
+                                        <RoundedSkeleton width="60px" height="42px" />
+                                    </div>
+                                    <div className="text-xs">
+                                        <TextSkeleton width="120px" height="12px" />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </>
+                    ) : (
+                        <>
+                            {/* General Header */}
+                            <div className="border-l-4 border-blue-600 pl-4 mb-6">
+                                <h2 className="text-xl font-semibold text-gray-900">
+                                    {t("personalInfo.general", "General")}
+                                </h2>
+                            </div>
+
+                            {/* Real Form */}
+                            <form onSubmit={onSubmit} className="space-y-6">
+                                {/* Dynamic Fields based on User Profile Configuration */}
+                                {userAttributes.length > 0 ? (
+                                    userAttributes.map((attribute: UserProfileAttributeMetadata) => renderFormField(attribute))
+                                ) : (
+                                    // Fallback to basic fields if no metadata available
+                                    <>
+                                        {/* Username Field */}
+                                        <TextField
+                                            label={t("username", "Username")}
+                                            type="text"
+                                            id="username"
+                                            name="username"
+                                            value={personalInfo?.username || ""}
+                                            required
+                                            readOnly
+                                            helpText={t("personalInfo.usernameHelp", "Username cannot be changed")}
+                                            layout="horizontal"
+                                        />
+
+                                        {/* Email Field */}
+                                        <TextField
+                                            label={t("email", "Email")}
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={personalInfo?.email || ""}
+                                            required
+                                            onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
+                                            layout="horizontal"
+                                        />
+
+                                        {/* First Name Field */}
+                                        <TextField
+                                            label={t("firstName", "First name")}
+                                            type="text"
+                                            id="firstName"
+                                            name="firstName"
+                                            value={personalInfo?.firstName || ""}
+                                            required
+                                            onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })}
+                                            layout="horizontal"
+                                        />
+
+                                        {/* Last Name Field */}
+                                        <TextField
+                                            label={t("lastName", "Last name")}
+                                            type="text"
+                                            id="lastName"
+                                            name="lastName"
+                                            value={personalInfo?.lastName || ""}
+                                            required
+                                            onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
+                                            layout="horizontal"
+                                        />
+                                    </>
+                                )}
+
+                                {/* Action Buttons */}
+                                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                                    <div className="flex items-center">
+                                        <Button
+                                            type="submit"
+                                            variant="primary"
+                                            loading={isLoading}
+                                            loadingText={t("saving", "Saving...")}
+                                        >
+                                            {t("save", "Save")}
+                                        </Button>
+                                    </div>
+
+                                    <div className="text-xs text-gray-500">
+                                        * {t("personalInfo.requiredFields", "Required fields")}
+                                    </div>
+                                </div>
+                            </form>
+                        </>
+                    )}
                 </div>
             </div>
         </Page>

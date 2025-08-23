@@ -8,7 +8,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
-import { Page, Button } from "../components";
+import { Page, Button, TextSkeleton, CardSkeleton } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +18,7 @@ export const LinkedAccounts = () => {
     const [linkedAccounts, setLinkedAccounts] = useState<LinkedAccountRepresentation[]>([]);
     const { addAlert, addError } = useAlerts();
     const [isLoading, setIsLoading] = useState(false);
+    const [isDataLoading, setIsDataLoading] = useState(true);
 
     const refreshLinkedAccounts = async () => {
         try {
@@ -28,7 +29,14 @@ export const LinkedAccounts = () => {
         }
     };
 
-    usePromise((signal) => getLinkedAccounts({ signal, context }), setLinkedAccounts);
+    usePromise(
+        async (signal) => {
+            const data = await getLinkedAccounts({ signal, context });
+            setIsDataLoading(false);
+            return data;
+        },
+        setLinkedAccounts
+    );
 
     // Helper function to get provider icon
     const getProviderIcon = (account: LinkedAccountRepresentation) => {
@@ -148,119 +156,139 @@ export const LinkedAccounts = () => {
         <Page
             title={t("linkedAccounts.title", "Linked accounts")}
             description={t("linkedAccounts.description", "Manage your linked social and identity provider accounts")}
-            className="mt-4"
+            className="mt-4 p-4"
         >
             <div className="space-y-6">
                 {/* Header Section */}
                 <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                    <div className="border-l-4 border-blue-600 pl-4 mb-6">
-                        <h2 className="text-xl font-semibold text-gray-900">
-                            {t("linkedAccounts.availableProviders", "Available identity providers")}
-                        </h2>
-                        <p className="text-sm text-gray-600 mt-1">
-                            {t("linkedAccounts.availableProviders.description", "Link your account with social and identity providers for easier sign-in")}
-                        </p>
-                    </div>
-
-                    {/* Accounts List */}
-                    <div className="space-y-4">
-                        {linkedAccounts.length > 0 ? (
-                            linkedAccounts.map((account) => (
-                                <div
-                                    key={account.providerAlias}
-                                    className={`p-4 rounded-2xl border transition-colors ${account.connected
-                                        ? ''
-                                        : 'border-gray-200 bg-white hover:bg-gray-50'
-                                        }`}
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            {/* Provider Icon */}
-                                            <div className={`p-3 rounded-xl border ${getProviderColor(account)}`}>
-                                                {getProviderIcon(account)}
-                                            </div>
-
-                                            {/* Provider Info */}
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center space-x-2 mb-1">
-                                                    <h3 className="text-lg font-medium text-gray-900">
-                                                        {account.displayName || account.providerName}
-                                                    </h3>
-                                                    {account.connected && (
-                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-xl text-xs font-medium bg-green-100 text-green-800">
-                                                            {t("linkedAccounts.connected", "Connected")}
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                {account.connected && account.linkedUsername && (
-                                                    <p className="text-sm text-gray-600">
-                                                        {t("linkedAccounts.linkedAs", "Linked as")}: <span className="font-medium">{account.linkedUsername}</span>
-                                                    </p>
-                                                )}
-
-                                                {!account.connected && (
-                                                    <>
-                                                        {/* Desktop description */}
-                                                        <p className="hidden md:block text-sm text-gray-600">
-                                                            {t("linkedAccounts.notConnected", "Not connected - click to link your {{provider}} account", { provider: account.displayName || account.providerName })}
-                                                        </p>
-                                                        {/* Mobile status */}
-                                                        <p className="block md:hidden text-sm text-gray-500">
-                                                            {t("linkedAccounts.notConnectedShort", "Not connected")}
-                                                        </p>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Actions */}
-                                        <div className="flex-shrink-0">
-                                            {account.connected ? (
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={() => handleUnlinkAccount(account)}
-                                                    loading={isLoading}
-                                                    loadingText={t("linkedAccounts.unlinking", "Unlinking...")}
-                                                    leftIcon={
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
-                                                        </svg>
-                                                    }
-                                                    className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
-                                                >
-                                                    {t("linkedAccounts.unlink", "Unlink")}
-                                                </Button>
-                                            ) : (
-                                                <Button
-                                                    variant="primary"
-                                                    onClick={() => handleLinkAccount(account)}
-                                                    loading={isLoading}
-                                                    loadingText={t("linkedAccounts.linking", "Linking...")}
-                                                    leftIcon={
-                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-                                                        </svg>
-                                                    }
-                                                >
-                                                    {t("linkedAccounts.link", "Link account")}
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </div>
+                    {isDataLoading ? (
+                        <>
+                            {/* Header Skeleton */}
+                            <div className="mb-6">
+                                <TextSkeleton width="240px" height="28px" />
+                                <div className="mt-2">
+                                    <TextSkeleton width="420px" height="14px" />
                                 </div>
-                            ))
-                        ) : (
-                            <div className="text-center py-8">
-                                <svg className="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-                                </svg>
-                                <p className="text-gray-500">
-                                    {t("linkedAccounts.noProviders", "No identity providers are configured")}
+                            </div>
+
+                            {/* Accounts List Skeleton */}
+                            <div className="space-y-4">
+                                <CardSkeleton showAvatar={true} lines={2} showActions={true} />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {/* Real Header */}
+                            <div className="border-l-4 border-blue-600 pl-4 mb-6">
+                                <h2 className="text-xl font-semibold text-gray-900">
+                                    {t("linkedAccounts.availableProviders", "Available identity providers")}
+                                </h2>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    {t("linkedAccounts.availableProviders.description", "Link your account with social and identity providers for easier sign-in")}
                                 </p>
                             </div>
-                        )}
-                    </div>
+
+                            {/* Real Accounts List */}
+                            <div className="space-y-4">
+                                {linkedAccounts.length > 0 ? (
+                                    linkedAccounts.map((account) => (
+                                        <div
+                                            key={account.providerAlias}
+                                            className={`p-4 rounded-2xl border transition-colors ${account.connected
+                                                ? ''
+                                                : 'border-gray-200 bg-white hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-4">
+                                                    {/* Provider Icon */}
+                                                    <div className={`p-3 rounded-xl border ${getProviderColor(account)}`}>
+                                                        {getProviderIcon(account)}
+                                                    </div>
+
+                                                    {/* Provider Info */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center space-x-2 mb-1">
+                                                            <h3 className="text-lg font-medium text-gray-900">
+                                                                {account.displayName || account.providerName}
+                                                            </h3>
+                                                            {account.connected && (
+                                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-xl text-xs font-medium bg-green-100 text-green-800">
+                                                                    {t("linkedAccounts.connected", "Connected")}
+                                                                </span>
+                                                            )}
+                                                        </div>
+
+                                                        {account.connected && account.linkedUsername && (
+                                                            <p className="text-sm text-gray-600">
+                                                                {t("linkedAccounts.linkedAs", "Linked as")}: <span className="font-medium">{account.linkedUsername}</span>
+                                                            </p>
+                                                        )}
+
+                                                        {!account.connected && (
+                                                            <>
+                                                                {/* Desktop description */}
+                                                                <p className="hidden md:block text-sm text-gray-600">
+                                                                    {t("linkedAccounts.notConnected", "Not connected - click to link your {{provider}} account", { provider: account.displayName || account.providerName })}
+                                                                </p>
+                                                                {/* Mobile status */}
+                                                                <p className="block md:hidden text-sm text-gray-500">
+                                                                    {t("linkedAccounts.notConnectedShort", "Not connected")}
+                                                                </p>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Actions */}
+                                                <div className="flex-shrink-0">
+                                                    {account.connected ? (
+                                                        <Button
+                                                            variant="outline"
+                                                            onClick={() => handleUnlinkAccount(account)}
+                                                            loading={isLoading}
+                                                            loadingText={t("linkedAccounts.unlinking", "Unlinking...")}
+                                                            leftIcon={
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                                                </svg>
+                                                            }
+                                                            className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
+                                                        >
+                                                            {t("linkedAccounts.unlink", "Unlink")}
+                                                        </Button>
+                                                    ) : (
+                                                        <Button
+                                                            variant="primary"
+                                                            onClick={() => handleLinkAccount(account)}
+                                                            loading={isLoading}
+                                                            loadingText={t("linkedAccounts.linking", "Linking...")}
+                                                            leftIcon={
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                                                                </svg>
+                                                            }
+                                                        >
+                                                            {t("linkedAccounts.link", "Link account")}
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <svg className="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                                        </svg>
+                                        <p className="text-gray-500">
+                                            {t("linkedAccounts.noProviders", "No identity providers are configured")}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </Page>

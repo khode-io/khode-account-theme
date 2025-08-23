@@ -1,4 +1,5 @@
 import React from 'react';
+import { CardSkeleton } from './Skeleton';
 
 export interface PageProps {
     /**
@@ -70,13 +71,12 @@ export const Page: React.FC<PageProps> = ({
     isLoading = false,
     loadingComponent
 }) => {
-    // Default loading component
+    // Default loading component using skeletons
     const defaultLoadingComponent = (
-        <div className="flex items-center justify-center py-12">
-            <div className="flex items-center space-x-3">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <span className="text-gray-600 font-medium">Loading...</span>
-            </div>
+        <div className="space-y-6">
+            <CardSkeleton showAvatar={true} lines={2} />
+            <CardSkeleton showAvatar={true} lines={3} />
+            <CardSkeleton showAvatar={false} lines={2} />
         </div>
     );
 

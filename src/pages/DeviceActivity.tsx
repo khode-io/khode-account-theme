@@ -7,18 +7,13 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
-import { Page, Button } from "../components";
+import { Page, Button, Dialog, TextSkeleton, CardSkeleton } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-    CheckCircle,
     Smartphone,
     Monitor,
-    Apple,
-    LogOut,
-    MapPin,
-    Clock,
-    MonitorSpeaker
+    RefreshCw,
 } from "lucide-react";
 
 export const DeviceActivity = () => {
@@ -27,6 +22,12 @@ export const DeviceActivity = () => {
     const [devices, setDevices] = useState<DeviceRepresentation[]>([]);
     const { addAlert, addError } = useAlerts();
     const [isLoading, setIsLoading] = useState(false);
+    const [isDataLoading, setIsDataLoading] = useState(true);
+    const [confirmDialog, setConfirmDialog] = useState<{
+        isOpen: boolean;
+        sessionId?: string;
+        isSignOutAll?: boolean;
+    }>({ isOpen: false });
 
     const refreshDevices = async () => {
         try {
@@ -37,17 +38,67 @@ export const DeviceActivity = () => {
         }
     };
 
-    usePromise((signal) => getDevices({ signal, context }), setDevices);
+    usePromise(
+        async (signal) => {
+            const data = await getDevices({ signal, context });
+            setIsDataLoading(false);
+            return data;
+        },
+        setDevices
+    );
 
     // Helper function to format date
     const formatDate = (timestamp: number) => {
         return new Date(timestamp).toLocaleString();
     };
 
-    // Helper function to get default icon
-    const getDefaultIcon = () => {
-        return <CheckCircle className="w-5 h-5" />;
+    // Helper function to format clients
+    const formatClients = (clients: any) => {
+        if (!clients) return 'Account Console';
+
+        // If clients is an array of client objects
+        if (Array.isArray(clients)) {
+            if (clients.length === 0) return 'Account Console';
+
+            const clientNames = clients.map(client => {
+                // Handle the specific structure: { clientId, clientName, ... }
+                if (client.clientName && !client.clientName.startsWith('${')) {
+                    return client.clientName;
+                } else if (client.clientId) {
+                    // Convert clientId to readable name
+                    return client.clientId
+                        .split('-')
+                        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                }
+                return 'Unknown Client';
+            });
+
+            return clientNames.join(', ');
+        }
+
+        // If clients is a single object
+        if (typeof clients === 'object') {
+            if (clients.clientName && !clients.clientName.startsWith('${')) {
+                return clients.clientName;
+            } else if (clients.clientId) {
+                return clients.clientId
+                    .split('-')
+                    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            }
+            return 'Account Console';
+        }
+
+        // If clients is a string
+        if (typeof clients === 'string') {
+            return clients;
+        }
+
+        return 'Account Console';
     };
+
+
 
     // Helper function to get device icon
     const getDeviceIcon = (device: DeviceRepresentation) => {
@@ -57,42 +108,23 @@ export const DeviceActivity = () => {
         return <Monitor className="w-6 h-6" />;
     };
 
-    // Helper function to get OS icon
-    const getOSIcon = (os?: string) => {
-        if (!os || os.trim() === '') return getDefaultIcon();
-        const osLower = os.toLowerCase();
-        if (osLower.includes('windows')) {
-            return <Monitor className="w-5 h-5" />;
-        } else if (osLower.includes('mac') || osLower.includes('ios')) {
-            return <Apple className="w-5 h-5" />;
-        } else if (osLower.includes('android')) {
-            return <Smartphone className="w-5 h-5" />;
-        } else if (osLower.includes('linux')) {
-            return <MonitorSpeaker className="w-5 h-5" />;
-        }
-        return getDefaultIcon();
-    };
 
-    // Helper function to get browser icon
-    const getBrowserIcon = (browser?: string) => {
-        if (!browser || browser.trim() === '') return getDefaultIcon();
-        const browserLower = browser.toLowerCase();
-        if (browserLower.includes('chrome')) {
-            return <Monitor className="w-5 h-5" />;
-        } else if (browserLower.includes('firefox')) {
-            return <Monitor className="w-5 h-5" />;
-        } else if (browserLower.includes('safari')) {
-            return <Apple className="w-5 h-5" />;
-        } else if (browserLower.includes('edge')) {
-            return <Monitor className="w-5 h-5" />;
-        }
-        return getDefaultIcon();
-    };
+
 
     const handleSignOutSession = async (sessionId: string) => {
+        setConfirmDialog({
+            isOpen: true,
+            sessionId: sessionId,
+            isSignOutAll: false
+        });
+    };
+
+    const confirmSignOutSession = async () => {
+        if (!confirmDialog.sessionId) return;
+
         setIsLoading(true);
         try {
-            await deleteSession(context, sessionId);
+            await deleteSession(context, confirmDialog.sessionId);
             addAlert(t("deviceActivity.signOut.success", "Session signed out successfully"));
             await refreshDevices();
         } catch (error) {
@@ -100,10 +132,18 @@ export const DeviceActivity = () => {
             addError(t("deviceActivity.signOut.error", "Failed to sign out session"));
         } finally {
             setIsLoading(false);
+            setConfirmDialog({ isOpen: false });
         }
     };
 
     const handleSignOutAllSessions = async () => {
+        setConfirmDialog({
+            isOpen: true,
+            isSignOutAll: true
+        });
+    };
+
+    const confirmSignOutAllSessions = async () => {
         setIsLoading(true);
         try {
             // Sign out all sessions (no session ID means all sessions)
@@ -115,200 +155,286 @@ export const DeviceActivity = () => {
             addError(t("deviceActivity.signOutAll.error", "Failed to sign out all sessions"));
         } finally {
             setIsLoading(false);
+            setConfirmDialog({ isOpen: false });
         }
     };
 
-    const handleSignOutDevice = async (device: DeviceRepresentation) => {
-        setIsLoading(true);
-        try {
-            // Sign out all sessions for this device
-            for (const session of device.sessions || []) {
-                if (!session.current) { // Don't sign out current session
-                    await deleteSession(context, session.id);
-                }
-            }
-            addAlert(t("deviceActivity.signOut.success", "Device sessions signed out successfully"));
-            await refreshDevices();
-        } catch (error) {
-            console.error('Failed to sign out device:', error);
-            addError(t("deviceActivity.signOut.error", "Failed to sign out device"));
-        } finally {
-            setIsLoading(false);
-        }
-    };
+
 
     return (
         <Page
-            title={t("deviceActivity.title", "Device activity")}
+            title={t("deviceActivity.title", "Signed in devices")}
             description={t("deviceActivity.description", "Monitor and manage your signed-in devices")}
-            className="mt-4"
+            className="mt-4 p-4"
         >
             <div className="space-y-6">
                 {/* Header Section */}
                 <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="border-l-4 border-blue-600 pl-4">
-                            <h2 className="text-xl font-semibold text-gray-900">
-                                {t("deviceActivity.activeDevices", "Active devices")}
-                            </h2>
-                            <p className="text-sm text-gray-600 mt-1">
-                                {t("deviceActivity.activeDevices.description", "Devices that have been used to sign in to your account")}
-                            </p>
-                        </div>
-
-                        {/* Sign out all sessions button */}
-                        {devices.length > 0 && (
-                            <Button
-                                variant="outline"
-                                onClick={handleSignOutAllSessions}
-                                loading={isLoading}
-                                loadingText={t("deviceActivity.signingOut", "Signing out...")}
-                                leftIcon={<LogOut className="w-4 h-4" />}
-                                className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
-                            >
-                                {t("deviceActivity.signOutAll", "Sign out all sessions")}
-                            </Button>
-                        )}
-                    </div>
-
-                    {/* Device List */}
-                    <div className="space-y-4">
-                        {devices.length > 0 ? (
-                            devices.map((device) => (
-                                <div
-                                    key={device.id}
-                                    className={`p-4 rounded-2xl border transition-colors ${device.current
-                                        ? 'border-blue-200 bg-blue-50'
-                                        : 'border-gray-200 bg-white hover:bg-gray-50'
-                                        }`}
-                                >
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-start space-x-4">
-                                            {/* Device Icon */}
-                                            <div className={`p-3 rounded-xl ${device.current ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
-                                                }`}>
-                                                {getDeviceIcon(device)}
-                                            </div>
-
-                                            {/* Device Info */}
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center space-x-2 mb-2">
-                                                    <h3 className="text-lg font-medium text-gray-900">
-                                                        {device.device || t("deviceActivity.unknownDevice", "Unknown Device")}
-                                                    </h3>
-                                                    {device.current && (
-                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-xl text-xs font-medium bg-green-100 text-green-800">
-                                                            {t("deviceActivity.currentDevice", "Current device")}
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                {/* OS and Browser Info */}
-                                                <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
-                                                    <div className="flex items-center space-x-1">
-                                                        {getOSIcon(device.os)}
-                                                        <span>
-                                                            {device.os || 'Unknown OS'} {device.osVersion || ''}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center space-x-1">
-                                                        {getBrowserIcon(device.browser)}
-                                                        <span>{device.browser || 'Unknown Browser'}</span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Location and Last Access */}
-                                                <div className="space-y-1 text-sm text-gray-600">
-                                                    <div className="flex items-center space-x-1">
-                                                        <MapPin className="w-4 h-4" />
-                                                        <span>{device.ipAddress || 'Unknown IP'}</span>
-                                                    </div>
-                                                    <div className="flex items-center space-x-1">
-                                                        <Clock className="w-4 h-4" />
-                                                        <span>
-                                                            {t("deviceActivity.lastAccess", "Last access")}: {formatDate(device.lastAccess)}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Sessions */}
-                                                {device.sessions && device.sessions.length > 0 && (
-                                                    <div className="mt-3">
-                                                        <p className="text-sm font-medium text-gray-700 mb-2">
-                                                            {t("deviceActivity.activeSessions", "Active sessions")} ({device.sessions.length})
-                                                        </p>
-                                                        <div className="space-y-2">
-                                                            {device.sessions.slice(0, 3).map((session) => (
-                                                                <div key={session.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-xl text-xs">
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <span className="font-medium">
-                                                                            {session.browser || 'Unknown Browser'}
-                                                                        </span>
-                                                                        <span className="text-gray-500">
-                                                                            {formatDate(session.started)}
-                                                                        </span>
-                                                                    </div>
-                                                                    <div className="flex items-center space-x-2">
-                                                                        {session.current ? (
-                                                                            <span className="text-green-600 font-medium">
-                                                                                {t("deviceActivity.current", "Current")}
-                                                                            </span>
-                                                                        ) : (
-                                                                            <Button
-                                                                                variant="ghost"
-                                                                                size="sm"
-                                                                                onClick={() => handleSignOutSession(session.id)}
-                                                                                disabled={isLoading}
-                                                                                className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                                                                                title={t("deviceActivity.signOutSession", "Sign out this session")}
-                                                                            >
-                                                                                {t("deviceActivity.signOut", "Sign out")}
-                                                                            </Button>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                            {device.sessions.length > 3 && (
-                                                                <p className="text-xs text-gray-500">
-                                                                    {t("deviceActivity.moreSessions", "And {{count}} more sessions", { count: device.sessions.length - 3 })}
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
+                    {isDataLoading ? (
+                        <>
+                            {/* Header Skeleton */}
+                            <div className="mb-6">
+                                <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+                                    <div className="flex-1">
+                                        <TextSkeleton width="160px" height="28px" />
+                                        <div className="mt-2">
+                                            <TextSkeleton width="320px" height="14px" />
                                         </div>
+                                    </div>
+                                    <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
+                                        <TextSkeleton width="80px" height="20px" />
+                                        <TextSkeleton width="140px" height="42px" className="rounded-lg" />
+                                    </div>
+                                </div>
+                            </div>
 
-                                        {/* Actions */}
-                                        {!device.current && (
-                                            <div className="flex-shrink-0">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => handleSignOutDevice(device)}
-                                                    loading={isLoading}
-                                                    loadingText={t("deviceActivity.signingOut", "Signing out...")}
-                                                    leftIcon={<LogOut className="w-4 h-4" />}
-                                                    className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
-                                                >
-                                                    {t("deviceActivity.signOutDevice", "Sign out device")}
-                                                </Button>
-                                            </div>
+                            {/* Device Sessions Skeleton */}
+                            <div className="space-y-4">
+                                <CardSkeleton showAvatar={true} lines={3} showActions={true} />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {/* Real Header */}
+                            <div className="mb-6">
+                                {/* Header - Mobile Stacked, Desktop Side-by-Side */}
+                                <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+                                    <div className="border-l-4 border-blue-600 pl-4">
+                                        <h2 className="text-xl font-semibold text-gray-900">
+                                            {t("deviceActivity.activeDevices", "Active devices")}
+                                        </h2>
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            {t("deviceActivity.activeDevices.description", "Devices that have been used to sign in to your account")}
+                                        </p>
+                                    </div>
+
+                                    {/* Actions - Mobile Full Width, Desktop Auto */}
+                                    <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
+                                        <button
+                                            onClick={refreshDevices}
+                                            className="flex items-center justify-center sm:justify-start text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                        >
+                                            <RefreshCw className="w-4 h-4 mr-2" />
+                                            <span className="hidden sm:inline">Refresh the page</span>
+                                            <span className="sm:hidden">Refresh</span>
+                                        </button>
+                                        {devices.length > 0 && (
+                                            <Button
+                                                variant="primary"
+                                                onClick={handleSignOutAllSessions}
+                                                loading={isLoading}
+                                                loadingText={t("deviceActivity.signingOut", "Signing out...")}
+                                                fullWidth={true}
+                                                className="sm:w-auto"
+                                            >
+                                                <span className="hidden sm:inline">Sign out all devices</span>
+                                                <span className="sm:hidden">Sign out all</span>
+                                            </Button>
                                         )}
                                     </div>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="text-center py-8">
-                                <Monitor className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                                <p className="text-gray-500">
-                                    {t("deviceActivity.noDevices", "No devices found")}
-                                </p>
                             </div>
-                        )}
-                    </div>
+
+                            {/* Real Sessions List */}
+                            <div className="space-y-4">
+                                {devices.length > 0 ? (
+                                    devices.flatMap((device) => {
+                                        if (device.sessions && device.sessions.length > 0) {
+                                            return device.sessions.map((session) => {
+                                                return (
+                                                    <div
+                                                        key={`${device.id}-${session.id}`}
+                                                        className="p-4 sm:p-6 rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+                                                    >
+                                                        {/* Mobile Layout - Stacked */}
+                                                        <div className="block sm:hidden">
+                                                            <div className="flex items-start space-x-3 mb-4">
+                                                                <div className="p-2">
+                                                                    {getDeviceIcon(device)}
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <h3 className="text-base font-semibold text-gray-900 mb-1">
+                                                                        {device.device || device.os || "Unknown Device"}
+                                                                    </h3>
+                                                                    <p className="text-sm text-gray-600">
+                                                                        {session.browser || device.browser || "Unknown Browser"}
+                                                                    </p>
+                                                                    {session.current && (
+                                                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-2">
+                                                                            Current session
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Mobile Info Grid */}
+                                                            <div className="space-y-3 text-sm mb-4">
+                                                                <div>
+                                                                    <span className="font-medium text-gray-700">IP address</span>
+                                                                    <div className="text-gray-900 font-mono">
+                                                                        {session.ipAddress || device.ipAddress || 'Unknown IP'}
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <span className="font-medium text-gray-700">Last accessed</span>
+                                                                    <div className="text-gray-900">
+                                                                        {formatDate(session.lastAccess || device.lastAccess)}
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <span className="font-medium text-gray-700">Clients</span>
+                                                                    <div className="text-gray-900">
+                                                                        {formatClients(session.clients)}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Mobile Action */}
+                                                            {!session.current && (
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    onClick={() => handleSignOutSession(session.id)}
+                                                                    loading={isLoading}
+                                                                    loadingText={t("deviceActivity.signingOut", "Signing out...")}
+                                                                    className="border-gray-300 text-gray-700 hover:bg-gray-50 w-full"
+                                                                >
+                                                                    Sign out
+                                                                </Button>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Desktop Layout - Clean and Compact */}
+                                                        <div className="hidden sm:block">
+                                                            <div className="flex items-start justify-between">
+                                                                <div className="flex items-start space-x-4 flex-1">
+                                                                    {/* Device Icon */}
+                                                                    <div className="flex-shrink-0 text-blue-600">
+                                                                        {getDeviceIcon(device)}
+                                                                    </div>
+
+                                                                    {/* Device Info */}
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="flex items-center space-x-3 mb-4">
+                                                                            <h3 className="text-lg font-semibold text-gray-900">
+                                                                                {device.device || device.os || "Mac"} / {session.browser || device.browser || "Unknown Browser"}
+                                                                            </h3>
+                                                                            {session.current && (
+                                                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                                                    Current session
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+
+                                                                        {/* Session Details Grid - Exactly like screenshot */}
+                                                                        <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
+                                                                            <div>
+                                                                                <div className="font-medium text-gray-700 mb-1">IP address</div>
+                                                                                <div className="text-gray-900 font-mono">
+                                                                                    {session.ipAddress || device.ipAddress || 'Unknown IP'}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <div className="font-medium text-gray-700 mb-1">Last accessed</div>
+                                                                                <div className="text-gray-900">
+                                                                                    {formatDate(session.lastAccess || device.lastAccess)}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <div className="font-medium text-gray-700 mb-1">Started</div>
+                                                                                <div className="text-gray-900">
+                                                                                    {formatDate(session.started)}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <div className="font-medium text-gray-700 mb-1">Expires</div>
+                                                                                <div className="text-gray-900">
+                                                                                    {formatDate(session.expires)}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="col-span-2">
+                                                                                <div className="font-medium text-gray-700 mb-1">Clients</div>
+                                                                                <div className="text-gray-900">
+                                                                                    {formatClients(session.clients)}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Desktop Actions */}
+                                                                {!session.current && (
+                                                                    <div className="flex-shrink-0 ml-6">
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            size="sm"
+                                                                            onClick={() => handleSignOutSession(session.id)}
+                                                                            loading={isLoading}
+                                                                            loadingText={t("deviceActivity.signingOut", "Signing out...")}
+                                                                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                                                                        >
+                                                                            Sign out
+                                                                        </Button>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            });
+                                        } else {
+                                            // Return empty array if no sessions
+                                            return [];
+                                        }
+                                    })
+                                ) : (
+                                    <div className="text-center py-8">
+                                        <Monitor className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                                        <p className="text-gray-500">
+                                            {t("deviceActivity.noDevices", "No devices found")}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
+
+            {/* Confirmation Dialog */}
+            <Dialog
+                isOpen={confirmDialog.isOpen}
+                onClose={() => setConfirmDialog({ isOpen: false })}
+                title={confirmDialog.isSignOutAll
+                    ? t("deviceActivity.signOutAll.confirm.title", "Sign out all devices?")
+                    : t("deviceActivity.signOut.confirm.title", "Sign out session?")
+                }
+                confirmText={confirmDialog.isSignOutAll
+                    ? t("deviceActivity.signOutAll.confirm.button", "Sign out all")
+                    : t("deviceActivity.signOut.confirm.button", "Sign out")
+                }
+                cancelText={t("common.cancel", "Cancel")}
+                onConfirm={confirmDialog.isSignOutAll ? confirmSignOutAllSessions : confirmSignOutSession}
+                loading={isLoading}
+                loadingText={t("deviceActivity.signingOut", "Signing out...")}
+                type="warning"
+            >
+                {confirmDialog.isSignOutAll ? (
+                    <p>
+                        {t("deviceActivity.signOutAll.confirm.message",
+                            "This will sign you out of all devices and sessions. You will need to sign in again.")}
+                    </p>
+                ) : (
+                    <p>
+                        {t("deviceActivity.signOut.confirm.message",
+                            "Are you sure you want to sign out of this session?")}
+                    </p>
+                )}
+            </Dialog>
         </Page>
     );
 };

@@ -63,12 +63,23 @@ jobs:
     - name: Build with Maven
       run: mvn clean install -DskipTests
       
-    - name: Get project version
-      id: project-version
+    - name: Get versions
+      id: versions
       run: |
-        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Project version: $VERSION"
+        # Get Keycloak version from pom.xml
+        KEYCLOAK_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        echo "keycloak-version=$KEYCLOAK_VERSION" >> $GITHUB_OUTPUT
+        echo "Keycloak version: $KEYCLOAK_VERSION"
+        
+        # Get extension version from package.json
+        EXTENSION_VERSION=$(node -p "require('./package.json').version")
+        echo "extension-version=$EXTENSION_VERSION" >> $GITHUB_OUTPUT
+        echo "Extension version: $EXTENSION_VERSION"
+        
+        # Create artifact name
+        ARTIFACT_NAME="khode-account-${KEYCLOAK_VERSION}-${EXTENSION_VERSION}"
+        echo "artifact-name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+        echo "Artifact name: $ARTIFACT_NAME"
         
     - name: Find JAR file
       id: find-jar
@@ -99,14 +110,15 @@ jobs:
         ## Keycloak Account Theme Release ${{ steps.tag-name.outputs.tag }}
         
         ### Installation
-        1. Download the `khode-account-${{ steps.project-version.outputs.version }}.jar` file
+        1. Download the `${{ steps.versions.outputs.artifact-name }}.jar` file
         2. Copy it to your Keycloak server's `providers` directory
         3. Restart your Keycloak server
         4. The custom account theme will be available in your realm settings
         
         ### Changes
         - Built from commit: ${{ github.sha }}
-        - Project version: ${{ steps.project-version.outputs.version }}
+        - Keycloak version: ${{ steps.versions.outputs.keycloak-version }}
+        - Extension version: ${{ steps.versions.outputs.extension-version }}
         EOF
         
         # Check if release already exists
@@ -124,14 +136,14 @@ jobs:
           
           # Upload new JAR asset
           gh release upload ${{ steps.tag-name.outputs.tag }} \
-            ${{ steps.find-jar.outputs.jar-file }}#khode-account-${{ steps.project-version.outputs.version }}.jar
+            ${{ steps.find-jar.outputs.jar-file }}#${{ steps.versions.outputs.artifact-name }}.jar
         else
           echo "Creating new release ${{ steps.tag-name.outputs.tag }}..."
           # Create release with GitHub CLI
           gh release create ${{ steps.tag-name.outputs.tag }} \
             --title "Release ${{ steps.tag-name.outputs.tag }}" \
             --notes-file release_notes.md \
-            ${{ steps.find-jar.outputs.jar-file }}#khode-account-${{ steps.project-version.outputs.version }}.jar
+            ${{ steps.find-jar.outputs.jar-file }}#${{ steps.versions.outputs.artifact-name }}.jar
         fi
         
     - name: Upload build artifacts

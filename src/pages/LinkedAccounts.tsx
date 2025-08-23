@@ -73,6 +73,18 @@ export const LinkedAccounts = () => {
                     <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z" />
                 </svg>
             );
+        } else if (provider.includes('apple')) {
+            return (
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
+                </svg>
+            );
+        } else if (provider.includes('bitbucket')) {
+            return (
+                <svg className="w-6 h-6" fill="#0052CC" viewBox="0 0 24 24">
+                    <path d="M.778 1.213a.768.768 0 00-.768.892l3.263 19.81c.084.5.515.868 1.022.873H19.95a.772.772 0 00.77-.646l3.27-20.03a.768.768 0 00-.768-.891zM14.52 15.53H9.522L8.17 8.466h7.561z" />
+                </svg>
+            );
         }
 
         // Default provider icon
@@ -93,6 +105,8 @@ export const LinkedAccounts = () => {
         if (provider.includes('twitter') || provider.includes('x')) return 'text-black bg-gray-50 border-gray-200';
         if (provider.includes('linkedin')) return 'text-blue-700 bg-blue-50 border-blue-200';
         if (provider.includes('microsoft') || provider.includes('azure')) return 'text-blue-600 bg-blue-50 border-blue-200';
+        if (provider.includes('apple')) return 'text-gray-900 bg-gray-50 border-gray-200';
+        if (provider.includes('bitbucket')) return 'text-blue-700 bg-blue-50 border-blue-200';
 
         return 'text-gray-600 bg-gray-50 border-gray-200';
     };
@@ -154,7 +168,7 @@ export const LinkedAccounts = () => {
                                 <div
                                     key={account.providerAlias}
                                     className={`p-4 rounded-2xl border transition-colors ${account.connected
-                                        ? 'border-green-200 bg-green-50'
+                                        ? ''
                                         : 'border-gray-200 bg-white hover:bg-gray-50'
                                         }`}
                                 >
@@ -171,11 +185,6 @@ export const LinkedAccounts = () => {
                                                     <h3 className="text-lg font-medium text-gray-900">
                                                         {account.displayName || account.providerName}
                                                     </h3>
-                                                    {account.social && (
-                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-xl text-xs font-medium bg-purple-100 text-purple-800">
-                                                            {t("linkedAccounts.social", "Social")}
-                                                        </span>
-                                                    )}
                                                     {account.connected && (
                                                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-xl text-xs font-medium bg-green-100 text-green-800">
                                                             {t("linkedAccounts.connected", "Connected")}
@@ -267,23 +276,6 @@ export const LinkedAccounts = () => {
                                 </p>
                             </div>
                         )}
-                    </div>
-                </div>
-
-                {/* Info Panel */}
-                <div className="bg-blue-50 border-l-4 border-blue-400 p-4 text-blue-700 rounded-2xl">
-                    <div className="flex items-center">
-                        <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                        </svg>
-                        <div>
-                            <p className="text-sm font-medium">
-                                {t("linkedAccounts.infoTitle", "About linked accounts")}
-                            </p>
-                            <p className="text-sm mt-1">
-                                {t("linkedAccounts.infoDescription", "Linking accounts allows you to sign in using your social media or other identity provider credentials. You can unlink accounts at any time.")}
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>

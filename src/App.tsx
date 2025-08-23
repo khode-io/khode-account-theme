@@ -130,7 +130,7 @@ function App() {
         <div className="flex py-4">
           {/* Sidebar - Hidden on mobile, shown on desktop */}
           <div className="hidden md:block w-64 flex-shrink-0">
-            <div className="sticky top-20 h-fit">
+            <div className="sticky top-20 h-fit overflow-hidden">
               <PageNav />
             </div>
           </div>
@@ -145,7 +145,7 @@ function App() {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[600px] sm:px-4 lg:px-24">
             <Suspense fallback={
               <div className="flex items-center justify-center h-64">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>

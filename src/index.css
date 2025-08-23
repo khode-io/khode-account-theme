@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent layout shift when scrollbar appears */
+html {
+    scrollbar-gutter: stable;
+    /* Modern browsers */
+}
+
+/* Ensure consistent box-sizing and prevent horizontal overflow */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* Prevent content jumping during async loading */
+.async-content {
+    min-height: 400px;
+    transition: min-height 0.2s ease-in-out;
+}
+
+.async-content.loaded {
+    min-height: auto;
+}
+
 /* Custom scrollbar for navigation */
 .custom-scrollbar {
     scrollbar-width: thin;

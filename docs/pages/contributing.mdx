@@ -1,0 +1,160 @@
+---
+title: "Contributing"
+---
+
+
+Thank you for your interest in contributing to Khode Account Theme!
+
+## Getting Started
+
+1. **Fork and clone**
+   ```bash
+   git clone https://github.com/khode-io/khode-account-theme.git
+   cd khode-account-theme
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Start development**
+   ```bash
+   pnpm run dev
+   pnpm run start-keycloak
+   ```
+
+4. **Create a branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+## Development Guidelines
+
+### Code Style
+
+- Use TypeScript for all new code
+- Follow existing component patterns
+- Use Tailwind CSS for styling
+- Add proper prop types and documentation
+
+Example component:
+```tsx
+interface ButtonProps {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary';
+  onClick?: () => void;
+}
+
+export const Button = ({ children, variant = 'primary', onClick }: ButtonProps) => {
+  return (
+    <button
+      className={`btn ${variant === 'primary' ? 'btn-primary' : 'btn-secondary'}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
+```
+
+### Commit Messages
+
+Use conventional commits:
+```bash
+feat: add dark theme toggle
+fix: resolve mobile layout issue
+docs: update installation guide
+style: improve button hover states
+```
+
+## Testing
+
+Before submitting:
+- Test functionality works
+- Check responsive design
+- Test both light and dark themes
+- Verify in different browsers
+
+## Pull Request Process
+
+1. **Update documentation** if needed
+2. **Test thoroughly**
+3. **Create pull request** with:
+   - Clear description
+   - Screenshots if UI changes
+   - Link to related issues
+
+### PR Template
+```markdown
+## Description
+Brief description of changes.
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Documentation update
+
+## Testing
+- [ ] Tested locally
+- [ ] Tested responsive design
+- [ ] Tested themes
+```
+
+## Bug Reports
+
+Include:
+- Clear description
+- Steps to reproduce
+- Expected vs actual behavior
+- Environment details (OS, browser, versions)
+- Screenshots if applicable
+
+## Feature Requests
+
+Include:
+- Problem description
+- Proposed solution
+- Use cases
+- Mockups or examples
+
+## Development Setup
+
+### Project Structure
+```
+src/
+├── components/     # Reusable UI components
+├── pages/         # Account management pages
+├── contexts/      # React contexts
+├── hooks/         # Custom hooks
+└── utils/         # Utility functions
+```
+
+### Available Scripts
+```bash
+pnpm run dev           # Start development server
+pnpm run build         # Build for production
+pnpm run start-keycloak # Start Keycloak server
+mvn clean install     # Build JAR package
+```
+
+## Code Review
+
+All contributions go through code review. We look for:
+- Code quality and style
+- Test coverage
+- Documentation updates
+- Performance considerations
+- Security implications
+
+## Community
+
+- **GitHub Issues**: Bug reports and feature requests
+- **GitHub Discussions**: Questions and community chat
+- **Pull Requests**: Code contributions
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License.
+
+Ready to contribute? Check out our [open issues](https://github.com/khode-io/khode-account-theme/issues)!

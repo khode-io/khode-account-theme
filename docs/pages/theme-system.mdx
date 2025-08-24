@@ -1,0 +1,315 @@
+---
+title: "Theme System"
+---
+
+
+Understanding the theme system and how to leverage it for customization.
+
+## Theme Architecture
+
+The theme uses a layered system:
+
+```
+CSS Custom Properties (Foundation)
+↓
+Semantic Color Mapping (Abstraction)
+↓
+Tailwind CSS Integration (Utilities)
+↓
+Component Styling (Implementation)
+```
+
+## CSS Custom Properties
+
+### Color System Structure
+
+Colors use space-separated RGB values for flexibility:
+
+```css
+/* Base color palettes */
+--color-primary-500: 59 130 246;    /* Blue */
+--color-secondary-700: 55 65 81;    /* Gray */
+--color-success-600: 22 163 74;     /* Green */
+
+/* Allows alpha channel */
+background-color: rgb(var(--color-primary-500) / 0.5);  /* 50% opacity */
+background-color: rgb(var(--color-primary-500));        /* Full opacity */
+```
+
+## Semantic Color Mapping
+
+Instead of using colors directly, map semantic meanings:
+
+```css
+:root {
+  /* Semantic mappings */
+  --color-background: 255 255 255;                    /* White */
+  --color-surface: 255 255 255;                       /* White */
+  --color-text-primary: var(--color-secondary-900);   /* Dark gray */
+  --color-accent-primary: var(--color-primary-600);   /* Blue */
+  --color-border-primary: var(--color-secondary-200); /* Light gray */
+}
+```
+
+Benefits:
+- Easy theme switching
+- Consistent naming across themes
+- Maintainable code
+- Flexible color assignments
+
+## Multi-Theme Support
+
+### Theme Variants
+
+```css
+/* Light Theme (Default) */
+:root {
+  --color-background: 255 255 255;
+  --color-text-primary: var(--color-secondary-900);
+}
+
+/* Dark Theme */
+:root[data-theme="dark"] {
+  --color-background: var(--github-dark-bg);
+  --color-text-primary: var(--github-dark-text-primary);
+}
+
+/* Auto Theme (System preference) */
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --color-background: var(--github-dark-bg);
+    --color-text-primary: var(--github-dark-text-primary);
+  }
+}
+```
+
+### Theme Context
+
+React context manages theme switching:
+
+```tsx
+// ThemeContext.tsx
+interface ThemeContextType {
+  theme: 'light' | 'dark' | 'auto';
+  setTheme: (theme: 'light' | 'dark' | 'auto') => void;
+  effectiveTheme: 'light' | 'dark';
+}
+
+// Usage
+const { theme, setTheme, effectiveTheme } = useTheme();
+```
+
+## Tailwind Integration
+
+### Custom Color Configuration
+
+Tailwind uses CSS custom properties:
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        // Map to CSS custom properties
+        primary: {
+          500: 'rgb(var(--color-primary-500) / <alpha-value>)',
+        },
+        // Semantic utilities
+        background: 'rgb(var(--color-background) / <alpha-value>)',
+        surface: 'rgb(var(--color-surface) / <alpha-value>)',
+        'text-primary': 'rgb(var(--color-text-primary) / <alpha-value>)',
+      }
+    }
+  }
+}
+```
+
+### Usage in Components
+
+```tsx
+// Use semantic Tailwind classes
+<div className="bg-surface text-text-primary border border-border-primary">
+  <h1 className="text-accent-primary">Title</h1>
+  <p className="text-text-secondary">Description</p>
+</div>
+```
+
+## Component Styling Patterns
+
+### Consistent Component Patterns
+
+```tsx
+// Button with theme-aware styling
+export const Button = ({ variant = 'primary', ...props }) => {
+  const baseClasses = 'px-4 py-2 rounded-md font-medium transition-colors';
+  
+  const variantClasses = {
+    primary: 'bg-accent-primary text-text-inverse hover:bg-accent-primary-hover',
+    secondary: 'bg-surface border border-border-primary hover:bg-hover-medium',
+  };
+
+  return (
+    <button 
+      className={`${baseClasses} ${variantClasses[variant]}`}
+      {...props}
+    />
+  );
+};
+```
+
+### Interactive States
+
+```css
+/* Hover states */
+.hover-light { background-color: rgb(var(--color-hover-light)); }
+.hover-medium { background-color: rgb(var(--color-hover-medium)); }
+
+/* Focus states */
+.focus-ring { 
+  outline: 2px solid rgb(var(--color-border-focus));
+  outline-offset: 2px;
+}
+```
+
+## Advanced Techniques
+
+### Custom Theme Variants
+
+```css
+/* Corporate Theme */
+:root[data-theme="corporate"] {
+  --color-accent-primary: 30 58 138;   /* Navy */
+  --color-surface: 248 250 252;       /* Light gray */
+}
+
+/* High Contrast Theme */
+:root[data-theme="high-contrast"] {
+  --color-background: 0 0 0;          /* Black */
+  --color-surface: 255 255 255;       /* White */
+  --color-text-primary: 0 0 0;        /* Black text */
+}
+```
+
+### Dynamic Color Generation
+
+```typescript
+// Generate color variations
+export const generateColorScale = (baseColor: string) => {
+  const rgb = hexToRgb(baseColor);
+  
+  return {
+    50: lighten(rgb, 0.95),
+    500: rgb,
+    600: darken(rgb, 0.1),
+    700: darken(rgb, 0.2),
+  };
+};
+
+// Apply at runtime
+const brandColors = generateColorScale('#3b82f6');
+Object.entries(brandColors).forEach(([shade, color]) => {
+  document.documentElement.style.setProperty(
+    `--color-brand-${shade}`, 
+    color
+  );
+});
+```
+
+### Runtime Customization
+
+```tsx
+export const ThemeCustomizer = () => {
+  const [primaryColor, setPrimaryColor] = useState('#3b82f6');
+  
+  const applyCustomColor = (color: string) => {
+    const colorScale = generateColorScale(color);
+    
+    Object.entries(colorScale).forEach(([shade, rgb]) => {
+      document.documentElement.style.setProperty(
+        `--color-primary-${shade}`, 
+        rgb
+      );
+    });
+  };
+
+  return (
+    <input 
+      type="color" 
+      value={primaryColor}
+      onChange={(e) => {
+        setPrimaryColor(e.target.value);
+        applyCustomColor(e.target.value);
+      }}
+    />
+  );
+};
+```
+
+## Debugging
+
+### Theme Debug Tools
+
+```tsx
+export const ThemeDebugger = () => {
+  const { theme, effectiveTheme } = useTheme();
+  
+  const debugInfo = {
+    currentTheme: theme,
+    effectiveTheme,
+    systemPreference: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+  };
+
+  return (
+    <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
+  );
+};
+```
+
+### CSS Inspector
+
+```javascript
+// Console utility
+const inspectTheme = () => {
+  const root = document.documentElement;
+  const computedStyle = getComputedStyle(root);
+  
+  const themeVars = {};
+  // Get all CSS custom properties starting with --color-
+  for (const prop of document.styleSheets[0].cssRules[0].style) {
+    if (prop.startsWith('--color-')) {
+      themeVars[prop] = computedStyle.getPropertyValue(prop).trim();
+    }
+  }
+  
+  return themeVars;
+};
+```
+
+## Performance
+
+### Optimization Tips
+
+1. **Minimize recomputation** - Avoid changing custom properties frequently
+2. **Batch updates** - Group property changes together
+3. **Use transform/opacity** - For animations, prefer these over color changes
+
+### Theme Switching Optimization
+
+```tsx
+// Optimize theme switching
+export const optimizedThemeSwitch = (newTheme: string) => {
+  // Disable transitions temporarily
+  document.documentElement.style.setProperty('--transition-duration', '0ms');
+  
+  // Apply new theme
+  document.documentElement.setAttribute('data-theme', newTheme);
+  
+  // Re-enable transitions
+  requestAnimationFrame(() => {
+    document.documentElement.style.removeProperty('--transition-duration');
+  });
+};
+```
+
+Next: [Advanced Customization](./customization-guide.mdx) | [API Reference](./api-reference.mdx)

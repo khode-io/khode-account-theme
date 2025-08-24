@@ -1,31 +1,58 @@
-# Custom Keycloak Account UI
+# Khode Account Theme
 
-This is a template to build a custom Keycloak Account UI using the [Keycloak Account UI](https://npmjs.com/package/@keycloak/keycloak-account-ui) package.
+A modern, customizable Keycloak Account UI theme built with React, TypeScript, and Tailwind CSS.
 
-## Getting started
+![Khode Account Theme](https://img.shields.io/badge/Keycloak-26.0.0-blue)
+![React](https://img.shields.io/badge/React-18.2.0-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.4.3-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.16-blue)
 
-To use HMR (Hot module replacement) in development, run the following command:
+## Features
 
-```bash
-pnpm i
-pnpm run dev
-```
-Then start the Keycloak server:
+- **Modern UI/UX** - Clean, intuitive interface with responsive design
+- **Dark/Light Theme** - Automatic and manual theme switching
+- **Mobile-First** - Optimized for all device sizes
+- **Customizable** - Easy branding, colors, and logo customization
+- **Fast Development** - Hot Module Replacement for instant updates
+- **Secure** - Built on Keycloak's robust authentication system
+- **i18n Ready** - Internationalization support
 
-```bash
-pnpm run start-keycloak
-```
-
-open the admin-console in your browser (http://localhost:8080/), when you the go to the `Manage Account` by clicking on the name in the toolbar, you will see the custom UI.
-
-## Build
-
-To build the application for production, run the following command:
+## Quick Start
 
 ```bash
-mvn install
+# Clone and install
+git clone https://github.com/khode-io/khode-account-theme.git
+cd khode-account-theme
+pnpm install
+
+# Start development
+pnpm run dev          # Terminal 1: React dev server
+pnpm run start-keycloak  # Terminal 2: Keycloak server
 ```
-This will create a "jar" file in the `target` directory that you can deploy to your Keycloak server by copying it to the `providers` directory.
+
+Visit [http://localhost:8080](http://localhost:8080) → Admin Console → "Manage Account" to see your custom theme.
+
+## Documentation
+
+Comprehensive documentation is available in the `docs/` folder:
+
+- **[Getting Started](./docs/pages/getting-started.md)** - Installation and setup guide
+- **[Logo & Branding](./docs/pages/logo-branding.mdx)** - Customize logos and colors
+- **[Customization Guide](./docs/pages/customization-guide.mdx)** - Advanced customization
+- **[Contributing](./docs/pages/contributing.mdx)** - How to contribute to the project
+- **[API Reference](./docs/pages/api-reference.mdx)** - Technical documentation
+- **[Deployment](./docs/pages/deployment.mdx)** - Production deployment guide
+- **[Troubleshooting](./docs/pages/troubleshooting.mdx)** - Common issues and solutions
+
+## Build for Production
+
+```bash
+# Build the complete theme JAR
+mvn clean install
+
+# Deploy to Keycloak
+cp target/khode-account-26.0.0.jar /path/to/keycloak/providers/
+```
 
 ## GitHub Actions
 

@@ -1,0 +1,92 @@
+---
+title: "Getting Started"
+---
+
+Quick guide to set up and run the Khode Account Theme locally.
+
+## Prerequisites
+
+- Node.js 18+
+- pnpm (or npm)
+- Java 17+
+- Git
+
+## Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/khode-io/khode-account-theme.git
+   cd khode-account-theme
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Start development servers**
+   ```bash
+   # Terminal 1: React dev server
+   pnpm run dev
+   
+   # Terminal 2: Keycloak server
+   pnpm run start-keycloak
+   ```
+
+4. **Access the application**
+   - Keycloak Admin: http://localhost:8080 (admin/admin)
+   - Custom Account UI: Click "Manage Account" in admin console
+
+## First Customization
+
+### Change the Logo
+
+Edit `src/components/Header.tsx`:
+```tsx
+<img
+  src="/your-logo.png"  // Change this
+  alt="Your Company"
+  className="w-16 h-16 mr-3 object-contain"
+/>
+```
+
+### Update Colors
+
+Edit `src/index.css`:
+```css
+:root {
+  --color-primary-500: 34 197 94;  /* Change to your brand color */
+  --color-accent-primary: var(--color-primary-500);
+}
+```
+
+## Build for Production
+
+```bash
+# Build the theme JAR
+mvn clean install
+
+# Deploy to Keycloak
+cp target/khode-account-26.0.0.jar /path/to/keycloak/providers/
+```
+
+## Troubleshooting
+
+### Port Conflicts
+```bash
+# Change ports if needed
+pnpm run dev -- --port 3000
+pnpm run start-keycloak -- --http-port=8081
+```
+
+### Clean Installation
+```bash
+rm -rf node_modules pnpm-lock.yaml server/
+pnpm install
+```
+
+## Next Steps
+
+- [Customize Logo & Branding](./logo-branding.mdx)
+- [Advanced Customization](./customization-guide.mdx)
+- [Deployment Guide](./deployment.mdx)

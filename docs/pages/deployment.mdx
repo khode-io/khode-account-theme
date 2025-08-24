@@ -1,0 +1,242 @@
+---
+title: "Deployment"
+---
+
+
+How to deploy your customized theme to production Keycloak servers.
+
+## Build for Production
+
+### Create JAR Package
+```bash
+mvn clean install
+# Creates: target/khode-account-26.0.0.jar
+```
+
+### Verify Build
+```bash
+jar -tf target/khode-account-26.0.0.jar
+# Should contain theme files and resources
+```
+
+## JAR Deployment
+
+### Step 1: Copy JAR
+```bash
+# Copy to Keycloak providers directory
+cp target/khode-account-26.0.0.jar /path/to/keycloak/providers/
+```
+
+### Step 2: Restart Keycloak
+```bash
+# Restart Keycloak server
+/path/to/keycloak/bin/kc.sh start
+```
+
+### Step 3: Configure Realm
+1. Login to Keycloak Admin Console
+2. Go to **Realm Settings** → **Themes**
+3. Set **Account Theme** to `khode-account`
+4. Save changes
+
+## Docker Deployment
+
+### Custom Docker Image
+```dockerfile
+FROM quay.io/keycloak/keycloak:latest
+
+# Copy theme JAR
+COPY target/khode-account-26.0.0.jar /opt/keycloak/providers/
+
+# Build Keycloak with theme
+RUN /opt/keycloak/bin/kc.sh build
+
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
+```
+
+Build and run:
+```bash
+docker build -t my-keycloak-theme .
+docker run -p 8080:8080 \
+  -e KEYCLOAK_ADMIN=admin \
+  -e KEYCLOAK_ADMIN_PASSWORD=admin \
+  my-keycloak-theme start-dev
+```
+
+### Docker Compose
+```yaml
+version: '3.8'
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    ports:
+      - "8080:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - ./target/khode-account-26.0.0.jar:/opt/keycloak/providers/khode-account-26.0.0.jar
+    command: start-dev
+```
+
+## Kubernetes Deployment
+
+### ConfigMap for Theme
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-theme
+binaryData:
+  khode-account-26.0.0.jar: |
+    # Base64 encoded JAR content
+```
+
+### Deployment
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KEYCLOAK_ADMIN
+          value: "admin"
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          value: "admin"
+        volumeMounts:
+        - name: theme-volume
+          mountPath: /opt/keycloak/providers/khode-account-26.0.0.jar
+          subPath: khode-account-26.0.0.jar
+      volumes:
+      - name: theme-volume
+        configMap:
+          name: keycloak-theme
+```
+
+## Production Configuration
+
+### Environment Variables
+```bash
+# Database
+KC_DB=postgres
+KC_DB_URL=jdbc:postgresql://db.example.com:5432/keycloak
+KC_DB_USERNAME=keycloak
+KC_DB_PASSWORD=password
+
+# Hostname
+KC_HOSTNAME=auth.example.com
+KC_HOSTNAME_STRICT=true
+
+# SSL
+KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/conf/server.crt
+KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/conf/server.key
+
+# Theme
+KC_SPI_THEME_CACHE_THEMES=true
+```
+
+### Performance Settings
+```bash
+# JVM options
+JAVA_OPTS="-Xms2g -Xmx4g"
+
+# Keycloak options
+KC_CACHE=ispn
+KC_HEALTH_ENABLED=true
+KC_METRICS_ENABLED=true
+```
+
+## CI/CD Pipeline
+
+### GitHub Actions
+```yaml
+name: Deploy Theme
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+    
+    - name: Build theme
+      run: |
+        pnpm install
+        mvn clean install
+    
+    - name: Deploy to server
+      run: |
+        scp target/khode-account-26.0.0.jar user@server:/opt/keycloak/providers/
+        ssh user@server 'systemctl restart keycloak'
+```
+
+## Health Checks
+
+### Verify Deployment
+```bash
+# Check theme is loaded
+curl http://localhost:8080/realms/master/account/
+
+# Check Keycloak health
+curl http://localhost:8080/health
+```
+
+### Monitor Logs
+```bash
+# Keycloak logs
+tail -f /opt/keycloak/data/log/keycloak.log
+
+# Filter theme-related logs
+grep -i theme /opt/keycloak/data/log/keycloak.log
+```
+
+## Troubleshooting
+
+### Theme Not Loading
+1. Check JAR is in providers directory
+2. Verify Keycloak restart
+3. Check theme selection in admin console
+4. Review Keycloak logs for errors
+
+### Asset Loading Issues
+1. Clear browser cache
+2. Check network tab for 404 errors
+3. Verify JAR contains all assets
+4. Restart Keycloak server
+
+### Rollback
+```bash
+# Remove theme JAR
+rm /opt/keycloak/providers/khode-account*.jar
+
+# Restart Keycloak
+systemctl restart keycloak
+
+# Reset theme to default in admin console
+```
+
+For more help, see [Troubleshooting Guide](./troubleshooting.mdx).

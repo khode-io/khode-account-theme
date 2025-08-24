@@ -361,6 +361,30 @@ body {
     background: rgb(var(--color-border-secondary));
 }
 
+/* Main scrollbar styling for light and dark modes */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(var(--color-surface-secondary));
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-border-primary));
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--color-border-secondary));
+}
+
+/* Firefox scrollbar styling */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-border-primary)) rgb(var(--color-surface-secondary));
+}
+
 /* Enhanced skeleton animation for better theme compatibility */
 @keyframes skeleton-pulse {
     0% {

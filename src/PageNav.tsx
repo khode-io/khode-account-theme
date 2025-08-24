@@ -149,8 +149,8 @@ export const PageNav = ({ onCloseMobileMenu }: PageNavProps) => {
         </div>
       </div>
 
-      {/* Footer Links - Always show */}
-      <div className="flex-shrink-0 pt-4 border-t border-border-primary">
+      {/* Footer Links - Sticky at bottom */}
+      <div className="flex-shrink-0 mt-auto pt-4 border-t border-border-primary">
         {/* Desktop: Row layout */}
         <div className="hidden md:flex justify-between text-xs text-text-tertiary px-3">
           <a href="#" className="hover:text-text-secondary transition-colors py-1">

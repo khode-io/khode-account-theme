@@ -194,10 +194,7 @@ export const LinkedAccounts = () => {
                                     linkedAccounts.map((account) => (
                                         <div
                                             key={account.providerAlias}
-                                            className={`p-4 rounded-2xl border transition-colors ${account.connected
-                                                ? ''
-                                                : 'border-border-primary hover:bg-hover-light'
-                                                }`}
+                                            className={"p-4 rounded-2xl border border-border-primary transition-colors hover:bg-hover-light"}
                                         >
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center space-x-4">

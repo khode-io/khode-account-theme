@@ -10,7 +10,7 @@
     "start-keycloak": "node ./start-server.js --account-dev"
   },
   "dependencies": {
-    "@keycloak/keycloak-account-ui": "25.0.4",
+    "@keycloak/keycloak-account-ui": "26.3.3",
     "@keycloak/keycloak-ui-shared": "25.0.4",
     "@patternfly/react-core": "5.0.0",
     "i18next": "^23.10.1",

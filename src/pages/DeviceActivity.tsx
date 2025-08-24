@@ -169,7 +169,7 @@ export const DeviceActivity = () => {
         >
             <div className="space-y-6">
                 {/* Header Section */}
-                <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <div className="rounded-2xl border border-border-primary p-6 shadow-sm">
                     {isDataLoading ? (
                         <>
                             {/* Header Skeleton */}
@@ -199,11 +199,11 @@ export const DeviceActivity = () => {
                             <div className="mb-6">
                                 {/* Header - Mobile Stacked, Desktop Side-by-Side */}
                                 <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
-                                    <div className="border-l-4 border-blue-600 pl-4">
-                                        <h2 className="text-xl font-semibold text-gray-900">
+                                    <div className="border-l-4 border-accent-primary pl-4">
+                                        <h2 className="text-xl font-semibold text-text-primary">
                                             {t("deviceActivity.activeDevices", "Active devices")}
                                         </h2>
-                                        <p className="text-sm text-gray-600 mt-1">
+                                        <p className="text-sm text-text-secondary mt-1">
                                             {t("deviceActivity.activeDevices.description", "Devices that have been used to sign in to your account")}
                                         </p>
                                     </div>
@@ -212,7 +212,7 @@ export const DeviceActivity = () => {
                                     <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
                                         <button
                                             onClick={refreshDevices}
-                                            className="flex items-center justify-center sm:justify-start text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                            className="flex items-center justify-center sm:justify-start text-accent-primary hover:text-accent-primary-hover text-sm font-medium"
                                         >
                                             <RefreshCw className="w-4 h-4 mr-2" />
                                             <span className="hidden sm:inline">Refresh the page</span>
@@ -244,7 +244,7 @@ export const DeviceActivity = () => {
                                                 return (
                                                     <div
                                                         key={`${device.id}-${session.id}`}
-                                                        className="p-4 sm:p-6 rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+                                                        className="p-4 sm:p-6 rounded-2xl border border-border-primary hover:bg-hover-light transition-colors"
                                                     >
                                                         {/* Mobile Layout - Stacked */}
                                                         <div className="block sm:hidden">
@@ -253,10 +253,10 @@ export const DeviceActivity = () => {
                                                                     {getDeviceIcon(device)}
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
-                                                                    <h3 className="text-base font-semibold text-gray-900 mb-1">
+                                                                    <h3 className="text-base font-semibold text-text-primary mb-1">
                                                                         {device.device || device.os || "Unknown Device"}
                                                                     </h3>
-                                                                    <p className="text-sm text-gray-600">
+                                                                    <p className="text-sm text-text-secondary">
                                                                         {session.browser || device.browser || "Unknown Browser"}
                                                                     </p>
                                                                     {session.current && (
@@ -270,20 +270,20 @@ export const DeviceActivity = () => {
                                                             {/* Mobile Info Grid */}
                                                             <div className="space-y-3 text-sm mb-4">
                                                                 <div>
-                                                                    <span className="font-medium text-gray-700">IP address</span>
-                                                                    <div className="text-gray-900 font-mono">
+                                                                    <span className="font-medium text-text-secondary">IP address</span>
+                                                                    <div className="text-text-primary font-mono">
                                                                         {session.ipAddress || device.ipAddress || 'Unknown IP'}
                                                                     </div>
                                                                 </div>
                                                                 <div>
-                                                                    <span className="font-medium text-gray-700">Last accessed</span>
-                                                                    <div className="text-gray-900">
+                                                                    <span className="font-medium text-text-secondary">Last accessed</span>
+                                                                    <div className="text-text-primary">
                                                                         {formatDate(session.lastAccess || device.lastAccess)}
                                                                     </div>
                                                                 </div>
                                                                 <div>
-                                                                    <span className="font-medium text-gray-700">Clients</span>
-                                                                    <div className="text-gray-900">
+                                                                    <span className="font-medium text-text-secondary">Clients</span>
+                                                                    <div className="text-text-primary">
                                                                         {formatClients(session.clients)}
                                                                     </div>
                                                                 </div>
@@ -297,7 +297,7 @@ export const DeviceActivity = () => {
                                                                     onClick={() => handleSignOutSession(session.id)}
                                                                     loading={isLoading}
                                                                     loadingText={t("deviceActivity.signingOut", "Signing out...")}
-                                                                    className="border-gray-300 text-gray-700 hover:bg-gray-50 w-full"
+                                                                    className="border-border-secondary text-text-secondary hover:bg-hover-light w-full"
                                                                 >
                                                                     Sign out
                                                                 </Button>
@@ -309,14 +309,14 @@ export const DeviceActivity = () => {
                                                             <div className="flex items-start justify-between">
                                                                 <div className="flex items-start space-x-4 flex-1">
                                                                     {/* Device Icon */}
-                                                                    <div className="flex-shrink-0 text-blue-600">
+                                                                    <div className="flex-shrink-0 text-accent-primary">
                                                                         {getDeviceIcon(device)}
                                                                     </div>
 
                                                                     {/* Device Info */}
                                                                     <div className="flex-1 min-w-0">
                                                                         <div className="flex items-center space-x-3 mb-4">
-                                                                            <h3 className="text-lg font-semibold text-gray-900">
+                                                                            <h3 className="text-lg font-semibold text-text-primary">
                                                                                 {device.device || device.os || "Mac"} / {session.browser || device.browser || "Unknown Browser"}
                                                                             </h3>
                                                                             {session.current && (
@@ -329,36 +329,36 @@ export const DeviceActivity = () => {
                                                                         {/* Session Details Grid - Exactly like screenshot */}
                                                                         <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
                                                                             <div>
-                                                                                <div className="font-medium text-gray-700 mb-1">IP address</div>
-                                                                                <div className="text-gray-900 font-mono">
+                                                                                <div className="font-medium text-text-secondary mb-1">IP address</div>
+                                                                                <div className="text-text-primary font-mono">
                                                                                     {session.ipAddress || device.ipAddress || 'Unknown IP'}
                                                                                 </div>
                                                                             </div>
 
                                                                             <div>
-                                                                                <div className="font-medium text-gray-700 mb-1">Last accessed</div>
-                                                                                <div className="text-gray-900">
+                                                                                <div className="font-medium text-text-secondary mb-1">Last accessed</div>
+                                                                                <div className="text-text-primary">
                                                                                     {formatDate(session.lastAccess || device.lastAccess)}
                                                                                 </div>
                                                                             </div>
 
                                                                             <div>
-                                                                                <div className="font-medium text-gray-700 mb-1">Started</div>
-                                                                                <div className="text-gray-900">
+                                                                                <div className="font-medium text-text-secondary mb-1">Started</div>
+                                                                                <div className="text-text-primary">
                                                                                     {formatDate(session.started)}
                                                                                 </div>
                                                                             </div>
 
                                                                             <div>
-                                                                                <div className="font-medium text-gray-700 mb-1">Expires</div>
-                                                                                <div className="text-gray-900">
+                                                                                <div className="font-medium text-text-secondary mb-1">Expires</div>
+                                                                                <div className="text-text-primary">
                                                                                     {formatDate(session.expires)}
                                                                                 </div>
                                                                             </div>
 
                                                                             <div className="col-span-2">
-                                                                                <div className="font-medium text-gray-700 mb-1">Clients</div>
-                                                                                <div className="text-gray-900">
+                                                                                <div className="font-medium text-text-secondary mb-1">Clients</div>
+                                                                                <div className="text-text-primary">
                                                                                     {formatClients(session.clients)}
                                                                                 </div>
                                                                             </div>
@@ -375,7 +375,7 @@ export const DeviceActivity = () => {
                                                                             onClick={() => handleSignOutSession(session.id)}
                                                                             loading={isLoading}
                                                                             loadingText={t("deviceActivity.signingOut", "Signing out...")}
-                                                                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                                                                            className="border-border-secondary text-text-secondary hover:bg-hover-light"
                                                                         >
                                                                             Sign out
                                                                         </Button>
@@ -393,8 +393,8 @@ export const DeviceActivity = () => {
                                     })
                                 ) : (
                                     <div className="text-center py-8">
-                                        <Monitor className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                                        <p className="text-gray-500">
+                                        <Monitor className="w-12 h-12 mx-auto text-text-tertiary mb-4" />
+                                        <p className="text-text-tertiary">
                                             {t("deviceActivity.noDevices", "No devices found")}
                                         </p>
                                     </div>

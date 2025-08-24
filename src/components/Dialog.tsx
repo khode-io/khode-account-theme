@@ -72,16 +72,16 @@ const Dialog: React.FC<DialogProps> = ({
     const getIcon = () => {
         switch (type) {
             case 'warning':
-                return <AlertTriangle className="w-6 h-6 text-amber-600" />;
+                return <AlertTriangle className="w-6 h-6 text-warning-600" />;
             case 'error':
-                return <AlertCircle className="w-6 h-6 text-red-600" />;
+                return <AlertCircle className="w-6 h-6 text-error-600" />;
             case 'success':
-                return <CheckCircle className="w-6 h-6 text-green-600" />;
+                return <CheckCircle className="w-6 h-6 text-success-600" />;
             case 'info':
-                return <Info className="w-6 h-6 text-blue-600" />;
+                return <Info className="w-6 h-6 text-primary-600" />;
             case 'confirm':
             default:
-                return <AlertTriangle className="w-6 h-6 text-amber-600" />;
+                return <AlertTriangle className="w-6 h-6 text-warning-600" />;
         }
     };
 
@@ -124,7 +124,7 @@ const Dialog: React.FC<DialogProps> = ({
             <div
                 className={`
                     relative w-full ${getSizeClasses()} 
-                    bg-white rounded-2xl shadow-xl 
+                    bg-surface rounded-2xl shadow-xl 
                     transform transition-all duration-200 ease-out
                     animate-in fade-in-0 zoom-in-95
                 `}
@@ -134,13 +134,13 @@ const Dialog: React.FC<DialogProps> = ({
                 <div className="flex items-start justify-between p-6 pb-4">
                     <div className="flex items-center space-x-3">
                         {getIcon()}
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-text-primary">
                             {title}
                         </h3>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+                        className="text-text-tertiary hover:text-text-secondary transition-colors p-1 rounded-lg hover:bg-hover-medium"
                         disabled={loading}
                     >
                         <X className="w-5 h-5" />
@@ -149,7 +149,7 @@ const Dialog: React.FC<DialogProps> = ({
 
                 {/* Content */}
                 <div className="px-6 pb-6">
-                    <div className="text-gray-600 mb-6">
+                    <div className="text-text-secondary mb-6">
                         {children}
                     </div>
 

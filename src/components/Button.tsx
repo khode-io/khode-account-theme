@@ -133,31 +133,31 @@ export const Button: React.FC<ButtonProps> = ({
         lg: 'px-6 py-3 text-base'
     };
 
-    // Variant classes
+    // Variant classes using theme colors
     const variantClasses = {
         primary: `
-      bg-blue-600 text-white border border-transparent
-      hover:bg-blue-700 focus:ring-blue-500
-      disabled:hover:bg-blue-600
+      bg-accent-primary text-text-inverse border border-transparent
+      hover:bg-accent-primary-hover focus:ring-accent-primary
+      disabled:hover:bg-accent-primary
     `.trim(),
         secondary: `
-      bg-gray-100 text-gray-900 border border-gray-300
-      hover:bg-gray-200 focus:ring-gray-500
-      disabled:hover:bg-gray-100
+      bg-surface-secondary text-text-primary border border-border-primary
+      hover:bg-surface-tertiary focus:ring-accent-secondary
+      disabled:hover:bg-surface-secondary
     `.trim(),
         danger: `
-      bg-red-600 text-white border border-transparent
-      hover:bg-red-700 focus:ring-red-500
-      disabled:hover:bg-red-600
+      bg-error-600 text-text-inverse border border-transparent
+      hover:bg-error-700 focus:ring-error-500
+      disabled:hover:bg-error-600
     `.trim(),
         outline: `
-      bg-white text-gray-700 border border-gray-300
-      hover:bg-gray-50 focus:ring-blue-500
-      disabled:hover:bg-white
+      bg-surface text-text-secondary border border-border-primary
+      hover:bg-hover-light focus:ring-accent-primary
+      disabled:hover:bg-surface
     `.trim(),
         ghost: `
-      bg-transparent text-gray-700 border border-transparent
-      hover:bg-gray-100 focus:ring-gray-500
+      bg-transparent text-text-secondary border border-transparent
+      hover:bg-hover-medium focus:ring-accent-secondary
       disabled:hover:bg-transparent
     `.trim()
     };

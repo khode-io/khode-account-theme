@@ -150,16 +150,16 @@ export const TextAreaField: React.FC<TextAreaFieldProps> = ({
     // Base textarea classes
     const baseTextAreaClasses = `
     w-full px-3 py-2 border rounded-xl shadow-sm 
-    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-    transition-colors bg-white text-gray-900 resize-vertical
+    focus:outline-none focus:ring-2 focus:ring-border-focus focus:border-border-focus 
+    transition-colors bg-surface text-text-primary resize-vertical
   `.trim();
 
     // State-specific classes
     const stateClasses = error
-        ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+        ? 'border-error-300 focus:ring-error-500 focus:border-error-500'
         : readOnly || disabled
-            ? 'bg-gray-50 text-gray-500 cursor-not-allowed border-gray-300'
-            : 'border-gray-300 hover:border-gray-400';
+            ? 'bg-surface-secondary text-text-tertiary cursor-not-allowed border-border-primary'
+            : 'border-border-primary hover:border-border-secondary';
 
     const textAreaClasses = `${baseTextAreaClasses} ${stateClasses} ${className}`;
 
@@ -169,8 +169,8 @@ export const TextAreaField: React.FC<TextAreaFieldProps> = ({
         : `space-y-2 ${containerClassName}`;
 
     const labelClasses = layout === 'horizontal'
-        ? 'md:col-span-1 block text-sm font-medium text-gray-700'
-        : 'block text-sm font-medium text-gray-700';
+        ? 'md:col-span-1 block text-sm font-medium text-text-secondary'
+        : 'block text-sm font-medium text-text-secondary';
 
     const textAreaContainerClasses = layout === 'horizontal'
         ? 'md:col-span-2'
@@ -187,7 +187,7 @@ export const TextAreaField: React.FC<TextAreaFieldProps> = ({
             {label && (
                 <div className={layout === 'horizontal' ? 'md:col-span-1' : ''}>
                     <label htmlFor={fieldId} className={labelClasses}>
-                        {label} {required && <span className="text-red-500">*</span>}
+                        {label} {required && <span className="text-error-500">*</span>}
                     </label>
                 </div>
             )}
@@ -217,7 +217,7 @@ export const TextAreaField: React.FC<TextAreaFieldProps> = ({
 
                 {/* Character Count */}
                 {showCharacterCount && (
-                    <div className={`mt-1 text-xs text-right ${isOverLimit ? 'text-red-600' : 'text-gray-500'}`}>
+                    <div className={`mt-1 text-xs text-right ${isOverLimit ? 'text-error-600' : 'text-text-tertiary'}`}>
                         {characterCountText}
                     </div>
                 )}
@@ -226,7 +226,7 @@ export const TextAreaField: React.FC<TextAreaFieldProps> = ({
                 {(helpText || error) && (
                     <p
                         id={`${fieldId}-help`}
-                        className={`mt-1 text-xs ${error ? 'text-red-600' : 'text-gray-500'
+                        className={`mt-1 text-xs ${error ? 'text-error-600' : 'text-text-tertiary'
                             }`}
                     >
                         {error || helpText}

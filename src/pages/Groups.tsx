@@ -38,8 +38,8 @@ export const Groups: React.FC = () => {
 
     const getGroupIcon = () => {
         return (
-            <div className="w-8 h-8 bg-green-100 rounded-xl flex items-center justify-center">
-                <Users className="w-5 h-5 text-green-600" />
+            <div className="w-8 h-8 bg-success-100 rounded-xl flex items-center justify-center">
+                <Users className="w-5 h-5 text-success-600" />
             </div>
         );
     };
@@ -79,8 +79,8 @@ export const Groups: React.FC = () => {
         return (
             <Page title={t("groups.title", "Groups")} description="">
                 <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    <span className="ml-3 text-gray-600">{t("groups.loading", "Loading groups...")}</span>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary"></div>
+                    <span className="ml-3 text-text-secondary">{t("groups.loading", "Loading groups...")}</span>
                 </div>
             </Page>
         );
@@ -92,24 +92,24 @@ export const Groups: React.FC = () => {
             <Page title={t("groups.title", "Groups")} description="">
                 <div className="space-y-6">
                     {/* Header */}
-                    <div className="border-l-4 border-blue-600 pl-4 mb-6">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                    <div className="border-l-4 border-accent-primary pl-4 mb-6">
+                        <h1 className="text-2xl font-bold text-text-primary mb-2">
                             {t("groups.title", "Groups")}
                         </h1>
-                        <p className="text-gray-600">
+                        <p className="text-text-secondary">
                             {t("groups.description", "Groups you are a member of")}
                         </p>
                     </div>
 
                     {/* Error Message */}
-                    <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-2xl">
+                    <div className="bg-error-50 border-l-4 border-error-400 p-4 rounded-2xl">
                         <div className="flex items-start">
-                            <XCircle className="w-5 h-5 text-red-400 mt-0.5 mr-3" />
+                            <XCircle className="w-5 h-5 text-error-400 mt-0.5 mr-3" />
                             <div>
-                                <h3 className="text-sm font-medium text-red-800 mb-1">
+                                <h3 className="text-sm font-medium text-error-800 mb-1">
                                     {t("groups.error.title", "Unable to load groups")}
                                 </h3>
-                                <p className="text-sm text-red-700">
+                                <p className="text-sm text-error-700">
                                     {t("groups.error.description", "You don't have permission to view group information, or the groups feature is not available for your account.")}
                                 </p>
                             </div>
@@ -117,14 +117,14 @@ export const Groups: React.FC = () => {
                     </div>
 
                     {/* Info Panel */}
-                    <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-2xl">
+                    <div className="bg-primary-50 border-l-4 border-primary-400 p-4 rounded-2xl">
                         <div className="flex items-start">
-                            <Info className="w-5 h-5 text-blue-400 mt-0.5 mr-3" />
+                            <Info className="w-5 h-5 text-primary-400 mt-0.5 mr-3" />
                             <div>
-                                <h3 className="text-sm font-medium text-blue-800 mb-1">
+                                <h3 className="text-sm font-medium text-primary-800 mb-1">
                                     {t("groups.info.title", "About Groups")}
                                 </h3>
-                                <p className="text-sm text-blue-700">
+                                <p className="text-sm text-primary-700">
                                     {t("groups.info.noAccess", "Groups are used to organize users and manage permissions. If you need access to group information, please contact your administrator.")}
                                 </p>
                             </div>
@@ -141,11 +141,11 @@ export const Groups: React.FC = () => {
         <Page title={t("groups.title", "Groups")} description="">
             <div className="space-y-6">
                 {/* Header */}
-                <div className="border-l-4 border-blue-600 pl-4 mb-6">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                <div className="border-l-4 border-accent-primary pl-4 mb-6">
+                    <h1 className="text-2xl font-bold text-text-primary mb-2">
                         {t("groups.title", "Groups")}
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-text-secondary">
                         {t("groups.description", "Groups you are a member of")}
                     </p>
                 </div>
@@ -153,15 +153,15 @@ export const Groups: React.FC = () => {
                 {/* Groups List */}
                 {groups.length === 0 ? (
                     <div className="text-center py-12">
-                        <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
+                        <div className="mx-auto h-12 w-12 text-text-tertiary mb-4">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        <h3 className="text-lg font-medium text-text-primary mb-2">
                             {t("groups.empty.title", "No group memberships")}
                         </h3>
-                        <p className="text-gray-500">
+                        <p className="text-text-tertiary">
                             {t("groups.empty.description", "You are not a member of any groups yet.")}
                         </p>
                     </div>
@@ -175,7 +175,7 @@ export const Groups: React.FC = () => {
                             return (
                                 <div
                                     key={group.id || group.path}
-                                    className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
+                                    className="bg-surface border border-border-primary rounded-2xl p-4 shadow-sm"
                                     style={{ marginLeft: `${level * 20}px` }}
                                 >
                                     <div className="flex items-center space-x-4">
@@ -187,13 +187,13 @@ export const Groups: React.FC = () => {
                                         {/* Group Info */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center space-x-3 mb-1">
-                                                <h3 className="text-lg font-medium text-gray-900">
+                                                <h3 className="text-lg font-medium text-text-primary">
                                                     {displayName}
                                                 </h3>
 
                                                 {/* Level Badge */}
                                                 {level > 0 && (
-                                                    <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-blue-100 text-blue-800">
+                                                    <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-primary-100 text-primary-800">
                                                         {t("groups.level", "Level")} {level}
                                                     </span>
                                                 )}
@@ -201,20 +201,20 @@ export const Groups: React.FC = () => {
 
                                             <div className="space-y-1 text-sm">
                                                 <div>
-                                                    <span className="font-medium text-gray-700">
+                                                    <span className="font-medium text-text-secondary">
                                                         {t("groups.path", "Path")}:
                                                     </span>
-                                                    <span className="ml-2 text-gray-600 font-mono">
+                                                    <span className="ml-2 text-text-secondary font-mono">
                                                         {group.path || '/'}
                                                     </span>
                                                 </div>
 
                                                 {group.id && (
                                                     <div>
-                                                        <span className="font-medium text-gray-700">
+                                                        <span className="font-medium text-text-secondary">
                                                             {t("groups.id", "ID")}:
                                                         </span>
-                                                        <span className="ml-2 text-gray-600 font-mono text-xs">
+                                                        <span className="ml-2 text-text-secondary font-mono text-xs">
                                                             {group.id}
                                                         </span>
                                                     </div>
@@ -222,10 +222,10 @@ export const Groups: React.FC = () => {
 
                                                 {parentPath && (
                                                     <div>
-                                                        <span className="font-medium text-gray-700">
+                                                        <span className="font-medium text-text-secondary">
                                                             {t("groups.parent", "Parent")}:
                                                         </span>
-                                                        <span className="ml-2 text-gray-600 font-mono">
+                                                        <span className="ml-2 text-text-secondary font-mono">
                                                             {parentPath}
                                                         </span>
                                                     </div>
@@ -248,7 +248,7 @@ export const Groups: React.FC = () => {
                                                     </span>
                                                 )}
 
-                                                <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-800">
+                                                <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-secondary-100 text-secondary-800">
                                                     <User className="w-3 h-3 mr-1" />
                                                     {t("groups.member", "Member")}
                                                 </span>
@@ -263,16 +263,16 @@ export const Groups: React.FC = () => {
 
                 {/* Statistics Panel */}
                 {groups.length > 0 && (
-                    <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 shadow-sm">
-                        <h3 className="text-sm font-medium text-gray-900 mb-3">
+                    <div className="bg-surface-secondary border border-border-primary rounded-2xl p-4 shadow-sm">
+                        <h3 className="text-sm font-medium text-text-primary mb-3">
                             {t("groups.statistics", "Membership Statistics")}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                             <div className="text-center">
-                                <div className="text-2xl font-bold text-blue-600">
+                                <div className="text-2xl font-bold text-accent-primary">
                                     {groups.length}
                                 </div>
-                                <div className="text-gray-600">
+                                <div className="text-text-secondary">
                                     {t("groups.totalGroups", "Total Groups")}
                                 </div>
                             </div>
@@ -280,7 +280,7 @@ export const Groups: React.FC = () => {
                                 <div className="text-2xl font-bold text-green-600">
                                     {groups.filter(g => getGroupLevel(g.path) === 0).length}
                                 </div>
-                                <div className="text-gray-600">
+                                <div className="text-text-secondary">
                                     {t("groups.rootGroups", "Root Groups")}
                                 </div>
                             </div>
@@ -288,7 +288,7 @@ export const Groups: React.FC = () => {
                                 <div className="text-2xl font-bold text-purple-600">
                                     {groups.filter(g => getGroupLevel(g.path) > 0).length}
                                 </div>
-                                <div className="text-gray-600">
+                                <div className="text-text-secondary">
                                     {t("groups.subGroups", "Sub Groups")}
                                 </div>
                             </div>

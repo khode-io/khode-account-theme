@@ -81,7 +81,7 @@ export const Applications: React.FC = () => {
         // Default application icon
         return (
             <div className="w-8 h-8 bg-blue-100 rounded-xl flex items-center justify-center">
-                <FileText className="w-5 h-5 text-blue-600" />
+                <FileText className="w-5 h-5 text-accent-primary" />
             </div>
         );
     };
@@ -89,7 +89,7 @@ export const Applications: React.FC = () => {
     const getStatusBadge = (application: ClientRepresentation) => {
         if (application.inUse) {
             return (
-                <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-green-100 text-green-800">
+                <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-success-100 text-success-800">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     {t("applications.active", "Active")}
                 </span>
@@ -97,7 +97,7 @@ export const Applications: React.FC = () => {
         }
 
         return (
-            <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-800">
+            <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-secondary-100 text-secondary-800">
                 <XCircle className="w-3 h-3 mr-1" />
                 {t("applications.inactive", "Inactive")}
             </span>
@@ -112,7 +112,7 @@ export const Applications: React.FC = () => {
         >
             <div className="space-y-6">
                 {/* Applications Section */}
-                <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <div className="rounded-2xl border border-border-primary p-6 shadow-sm">
                     {isDataLoading ? (
                         <>
                             {/* Header Skeleton */}
@@ -132,11 +132,11 @@ export const Applications: React.FC = () => {
                     ) : (
                         <>
                             {/* Real Header */}
-                            <div className="border-l-4 border-blue-600 pl-4 mb-6">
-                                <h2 className="text-xl font-semibold text-gray-900">
+                            <div className="border-l-4 border-accent-primary pl-4 mb-6">
+                                <h2 className="text-xl font-semibold text-text-primary">
                                     {t("applications.title", "Applications")}
                                 </h2>
-                                <p className="text-sm text-gray-600 mt-1">
+                                <p className="text-sm text-text-secondary mt-1">
                                     {t("applications.description", "Manage applications that have access to your account")}
                                 </p>
                             </div>
@@ -147,37 +147,37 @@ export const Applications: React.FC = () => {
                                     applications.map((application) => (
                                         <div
                                             key={application.clientId}
-                                            className="p-4 rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+                                            className="p-4 rounded-2xl border border-border-primary hover:bg-hover-light transition-colors"
                                         >
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center space-x-4">
                                                     {/* Application Icon */}
-                                                    <div className="p-3 rounded-xl border bg-blue-50 border-blue-200">
+                                                    <div className="p-3 rounded-xl border border-border-primary">
                                                         {getApplicationIcon(application)}
                                                     </div>
 
                                                     {/* Application Info */}
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center space-x-2 mb-1">
-                                                            <h3 className="text-lg font-medium text-gray-900">
+                                                            <h3 className="text-lg font-medium text-text-primary">
                                                                 {application.clientName || application.clientId}
                                                             </h3>
                                                             {getStatusBadge(application)}
                                                         </div>
 
-                                                        <p className="text-sm text-gray-600">
+                                                        <p className="text-sm text-text-secondary">
                                                             {t("applications.clientId", "Client ID")}: <span className="font-mono">{application.clientId}</span>
                                                         </p>
 
                                                         {application.effectiveUrl && (
                                                             <>
                                                                 {/* Desktop URL */}
-                                                                <p className="hidden md:block text-sm text-gray-600">
-                                                                    {t("applications.url", "URL")}: <a href={application.effectiveUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">{application.effectiveUrl}</a>
+                                                                <p className="hidden md:block text-sm text-text-secondary">
+                                                                    {t("applications.url", "URL")}: <a href={application.effectiveUrl} target="_blank" rel="noopener noreferrer" className="text-accent-primary hover:text-accent-primary-hover">{application.effectiveUrl}</a>
                                                                 </p>
                                                                 {/* Mobile URL */}
-                                                                <p className="block md:hidden text-sm text-gray-600">
-                                                                    {t("applications.url", "URL")}: <span className="text-blue-600 break-all">{application.effectiveUrl}</span>
+                                                                <p className="block md:hidden text-sm text-text-secondary">
+                                                                    {t("applications.url", "URL")}: <span className="text-accent-primary break-all">{application.effectiveUrl}</span>
                                                                 </p>
                                                             </>
                                                         )}
@@ -193,7 +193,7 @@ export const Applications: React.FC = () => {
                                                             loading={isLoading}
                                                             loadingText={t("applications.revoking", "Revoking...")}
                                                             leftIcon={<Trash2 className="w-4 h-4" />}
-                                                            className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
+                                                            className="border-error-300 text-error-700 hover:bg-error-50 focus:ring-error-500"
                                                         >
                                                             {t("applications.revokeAccess", "Revoke access")}
                                                         </Button>
@@ -204,15 +204,15 @@ export const Applications: React.FC = () => {
                                     ))
                                 ) : (
                                     <div className="text-center py-8">
-                                        <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
+                                        <div className="mx-auto h-12 w-12 text-text-tertiary mb-4">
                                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                             </svg>
                                         </div>
-                                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                        <h3 className="text-lg font-medium text-text-primary mb-2">
                                             {t("applications.empty.title", "No applications")}
                                         </h3>
-                                        <p className="text-gray-500">
+                                        <p className="text-text-tertiary">
                                             {t("applications.empty.description", "You haven't granted access to any applications yet.")}
                                         </p>
                                     </div>

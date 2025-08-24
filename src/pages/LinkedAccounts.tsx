@@ -107,16 +107,16 @@ export const LinkedAccounts = () => {
     const getProviderColor = (account: LinkedAccountRepresentation) => {
         const provider = account.providerAlias.toLowerCase();
 
-        if (provider.includes('google')) return 'text-red-600 bg-red-50 border-red-200';
-        if (provider.includes('facebook')) return 'text-blue-600 bg-blue-50 border-blue-200';
-        if (provider.includes('github')) return 'text-gray-900 bg-gray-50 border-gray-200';
-        if (provider.includes('twitter') || provider.includes('x')) return 'text-black bg-gray-50 border-gray-200';
-        if (provider.includes('linkedin')) return 'text-blue-700 bg-blue-50 border-blue-200';
-        if (provider.includes('microsoft') || provider.includes('azure')) return 'text-blue-600 bg-blue-50 border-blue-200';
-        if (provider.includes('apple')) return 'text-gray-900 bg-gray-50 border-gray-200';
-        if (provider.includes('bitbucket')) return 'text-blue-700 bg-blue-50 border-blue-200';
+        if (provider.includes('google')) return 'text-error-600 bg-error-50 border-error-200';
+        if (provider.includes('facebook')) return 'text-primary-600 bg-primary-50 border-primary-200';
+        if (provider.includes('github')) return 'text-text-primary bg-surface-secondary border-border-primary';
+        if (provider.includes('twitter') || provider.includes('x')) return 'text-text-primary bg-surface-secondary border-border-primary';
+        if (provider.includes('linkedin')) return 'text-primary-700 bg-primary-50 border-primary-200';
+        if (provider.includes('microsoft') || provider.includes('azure')) return 'text-primary-600 bg-primary-50 border-primary-200';
+        if (provider.includes('apple')) return 'text-text-primary bg-surface-secondary border-border-primary';
+        if (provider.includes('bitbucket')) return 'text-primary-700 bg-primary-50 border-primary-200';
 
-        return 'text-gray-600 bg-gray-50 border-gray-200';
+        return 'text-text-secondary bg-surface-secondary border-border-primary';
     };
 
     const handleLinkAccount = async (account: LinkedAccountRepresentation) => {
@@ -160,7 +160,7 @@ export const LinkedAccounts = () => {
         >
             <div className="space-y-6">
                 {/* Header Section */}
-                <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <div className="rounded-2xl border border-border-primary p-6 shadow-sm">
                     {isDataLoading ? (
                         <>
                             {/* Header Skeleton */}
@@ -180,10 +180,10 @@ export const LinkedAccounts = () => {
                         <>
                             {/* Real Header */}
                             <div className="border-l-4 border-blue-600 pl-4 mb-6">
-                                <h2 className="text-xl font-semibold text-gray-900">
+                                <h2 className="text-xl font-semibold text-text-primary">
                                     {t("linkedAccounts.availableProviders", "Available identity providers")}
                                 </h2>
-                                <p className="text-sm text-gray-600 mt-1">
+                                <p className="text-sm text-text-secondary mt-1">
                                     {t("linkedAccounts.availableProviders.description", "Link your account with social and identity providers for easier sign-in")}
                                 </p>
                             </div>
@@ -196,7 +196,7 @@ export const LinkedAccounts = () => {
                                             key={account.providerAlias}
                                             className={`p-4 rounded-2xl border transition-colors ${account.connected
                                                 ? ''
-                                                : 'border-gray-200 bg-white hover:bg-gray-50'
+                                                : 'border-border-primary hover:bg-hover-light'
                                                 }`}
                                         >
                                             <div className="flex items-center justify-between">
@@ -209,7 +209,7 @@ export const LinkedAccounts = () => {
                                                     {/* Provider Info */}
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center space-x-2 mb-1">
-                                                            <h3 className="text-lg font-medium text-gray-900">
+                                                            <h3 className="text-lg font-medium text-text-primary">
                                                                 {account.displayName || account.providerName}
                                                             </h3>
                                                             {account.connected && (
@@ -220,7 +220,7 @@ export const LinkedAccounts = () => {
                                                         </div>
 
                                                         {account.connected && account.linkedUsername && (
-                                                            <p className="text-sm text-gray-600">
+                                                            <p className="text-sm text-text-secondary">
                                                                 {t("linkedAccounts.linkedAs", "Linked as")}: <span className="font-medium">{account.linkedUsername}</span>
                                                             </p>
                                                         )}
@@ -228,11 +228,11 @@ export const LinkedAccounts = () => {
                                                         {!account.connected && (
                                                             <>
                                                                 {/* Desktop description */}
-                                                                <p className="hidden md:block text-sm text-gray-600">
+                                                                <p className="hidden md:block text-sm text-text-secondary">
                                                                     {t("linkedAccounts.notConnected", "Not connected - click to link your {{provider}} account", { provider: account.displayName || account.providerName })}
                                                                 </p>
                                                                 {/* Mobile status */}
-                                                                <p className="block md:hidden text-sm text-gray-500">
+                                                                <p className="block md:hidden text-sm text-text-tertiary">
                                                                     {t("linkedAccounts.notConnectedShort", "Not connected")}
                                                                 </p>
                                                             </>
@@ -253,7 +253,7 @@ export const LinkedAccounts = () => {
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                                                                 </svg>
                                                             }
-                                                            className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500"
+                                                            className="border-error-300 text-error-700 hover:bg-error-50 focus:ring-error-500"
                                                         >
                                                             {t("linkedAccounts.unlink", "Unlink")}
                                                         </Button>
@@ -278,10 +278,10 @@ export const LinkedAccounts = () => {
                                     ))
                                 ) : (
                                     <div className="text-center py-8">
-                                        <svg className="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-12 h-12 mx-auto text-text-tertiary mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
                                         </svg>
-                                        <p className="text-gray-500">
+                                        <p className="text-text-tertiary">
                                             {t("linkedAccounts.noProviders", "No identity providers are configured")}
                                         </p>
                                     </div>

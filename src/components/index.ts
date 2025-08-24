@@ -28,3 +28,4 @@ export {
     type TableSkeletonProps,
     type FormSkeletonProps
 } from './Skeleton';
+export { ThemeSwitcher, ThemeToggle } from './ThemeSwitcher';

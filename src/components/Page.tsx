@@ -91,12 +91,12 @@ export const Page: React.FC<PageProps> = ({
                             {(title || description) && (
                                 <div className="mb-4">
                                     {title && (
-                                        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                                        <h1 className="text-3xl font-bold text-text-primary mb-2">
                                             {title}
                                         </h1>
                                     )}
                                     {description && (
-                                        <p className="text-lg text-gray-600 leading-relaxed">
+                                        <p className="text-lg text-text-secondary leading-relaxed">
                                             {description}
                                         </p>
                                     )}
@@ -117,7 +117,7 @@ export const Page: React.FC<PageProps> = ({
             {/* Page Content */}
             <div className="relative">
                 {isLoading ? (
-                    <div className="absolute inset-0 bg-white bg-opacity-75 z-10 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-surface bg-opacity-75 z-10 flex items-center justify-center">
                         {loadingComponent || defaultLoadingComponent}
                     </div>
                 ) : null}

@@ -2,6 +2,218 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== THEME COLOR SYSTEM ===== */
+/* CSS Custom Properties for theme colors with inheritance flow */
+:root {
+    /* Primary Color Palette */
+    --color-primary-50: 239 246 255;
+    /* #eff6ff */
+    --color-primary-100: 219 234 254;
+    /* #dbeafe */
+    --color-primary-200: 191 219 254;
+    /* #bfdbfe */
+    --color-primary-300: 147 197 253;
+    /* #93c5fd */
+    --color-primary-400: 96 165 250;
+    /* #60a5fa */
+    --color-primary-500: 59 130 246;
+    /* #3b82f6 */
+    --color-primary-600: 37 99 235;
+    /* #2563eb */
+    --color-primary-700: 29 78 216;
+    /* #1d4ed8 */
+    --color-primary-800: 30 64 175;
+    /* #1e40af */
+    --color-primary-900: 30 58 138;
+    /* #1e3a8a */
+    --color-primary-950: 23 37 84;
+    /* #172554 */
+
+    /* Secondary Color Palette (Gray) */
+    --color-secondary-50: 249 250 251;
+    /* #f9fafb */
+    --color-secondary-100: 243 244 246;
+    /* #f3f4f6 */
+    --color-secondary-200: 229 231 235;
+    /* #e5e7eb */
+    --color-secondary-300: 209 213 219;
+    /* #d1d5db */
+    --color-secondary-400: 156 163 175;
+    /* #9ca3af */
+    --color-secondary-500: 107 114 128;
+    /* #6b7280 */
+    --color-secondary-600: 75 85 99;
+    /* #4b5563 */
+    --color-secondary-700: 55 65 81;
+    /* #374151 */
+    --color-secondary-800: 31 41 55;
+    /* #1f2937 */
+    --color-secondary-900: 17 24 39;
+    /* #111827 */
+    --color-secondary-950: 3 7 18;
+    /* #030712 */
+
+    /* Success Color Palette */
+    --color-success-50: 240 253 244;
+    /* #f0fdf4 */
+    --color-success-100: 220 252 231;
+    /* #dcfce7 */
+    --color-success-200: 187 247 208;
+    /* #bbf7d0 */
+    --color-success-300: 134 239 172;
+    /* #86efac */
+    --color-success-400: 74 222 128;
+    /* #4ade80 */
+    --color-success-500: 34 197 94;
+    /* #22c55e */
+    --color-success-600: 22 163 74;
+    /* #16a34a */
+    --color-success-700: 21 128 61;
+    /* #15803d */
+    --color-success-800: 22 101 52;
+    /* #166534 */
+    --color-success-900: 20 83 45;
+    /* #14532d */
+    --color-success-950: 5 46 22;
+    /* #052e16 */
+
+    /* Warning Color Palette */
+    --color-warning-50: 255 251 235;
+    /* #fffbeb */
+    --color-warning-100: 254 243 199;
+    /* #fef3c7 */
+    --color-warning-200: 253 230 138;
+    /* #fde68a */
+    --color-warning-300: 252 211 77;
+    /* #fcd34d */
+    --color-warning-400: 251 191 36;
+    /* #fbbf24 */
+    --color-warning-500: 245 158 11;
+    /* #f59e0b */
+    --color-warning-600: 217 119 6;
+    /* #d97706 */
+    --color-warning-700: 180 83 9;
+    /* #b45309 */
+    --color-warning-800: 146 64 14;
+    /* #92400e */
+    --color-warning-900: 120 53 15;
+    /* #78350f */
+    --color-warning-950: 69 26 3;
+    /* #451a03 */
+
+    /* Error Color Palette */
+    --color-error-50: 254 242 242;
+    /* #fef2f2 */
+    --color-error-100: 254 226 226;
+    /* #fee2e2 */
+    --color-error-200: 254 202 202;
+    /* #fecaca */
+    --color-error-300: 252 165 165;
+    /* #fca5a5 */
+    --color-error-400: 248 113 113;
+    /* #f87171 */
+    --color-error-500: 239 68 68;
+    /* #ef4444 */
+    --color-error-600: 220 38 38;
+    /* #dc2626 */
+    --color-error-700: 185 28 28;
+    /* #b91c1c */
+    --color-error-800: 153 27 27;
+    /* #991b1b */
+    --color-error-900: 127 29 29;
+    /* #7f1d1d */
+    --color-error-950: 69 10 10;
+    /* #450a0a */
+
+    /* Semantic Color Mappings - Easy to update for different themes */
+    --color-background: 255 255 255;
+    /* #ffffff - Pure white background */
+    --color-surface: 255 255 255;
+    /* #ffffff */
+    --color-surface-secondary: var(--color-secondary-100);
+    --color-surface-tertiary: var(--color-secondary-200);
+
+    --color-text-primary: var(--color-secondary-900);
+    --color-text-secondary: var(--color-secondary-700);
+    --color-text-tertiary: var(--color-secondary-500);
+    --color-text-inverse: 255 255 255;
+
+    --color-border-primary: var(--color-secondary-200);
+    --color-border-secondary: var(--color-secondary-300);
+    --color-border-focus: var(--color-primary-500);
+
+    --color-accent-primary: var(--color-primary-600);
+    --color-accent-primary-hover: var(--color-primary-700);
+    --color-accent-secondary: var(--color-secondary-600);
+    --color-accent-secondary-hover: var(--color-secondary-700);
+
+    /* Interactive States */
+    --color-hover-light: var(--color-secondary-50);
+    --color-hover-medium: var(--color-secondary-100);
+    --color-active-light: var(--color-primary-50);
+    --color-active-medium: var(--color-primary-100);
+
+    /* Status Colors */
+    --color-status-success: var(--color-success-600);
+    --color-status-warning: var(--color-warning-600);
+    --color-status-error: var(--color-error-600);
+    --color-status-info: var(--color-primary-600);
+}
+
+/* Dark Theme Support (Optional - can be activated later) */
+@media (prefers-color-scheme: dark) {
+    :root[data-theme="auto"] {
+        --color-background: var(--color-secondary-900);
+        --color-surface: var(--color-secondary-800);
+        --color-surface-secondary: var(--color-secondary-700);
+        --color-surface-tertiary: var(--color-secondary-600);
+
+        --color-text-primary: var(--color-secondary-50);
+        --color-text-secondary: var(--color-secondary-200);
+        --color-text-tertiary: var(--color-secondary-400);
+
+        --color-border-primary: var(--color-secondary-700);
+        --color-border-secondary: var(--color-secondary-600);
+
+        /* Accent colors for dark theme - brighter for better contrast */
+        --color-accent-primary: var(--color-primary-400);
+        --color-accent-primary-hover: var(--color-primary-300);
+        --color-accent-secondary: var(--color-secondary-400);
+        --color-accent-secondary-hover: var(--color-secondary-300);
+
+        --color-hover-light: var(--color-secondary-800);
+        --color-hover-medium: var(--color-secondary-700);
+    }
+}
+
+/* Manual Dark Theme */
+:root[data-theme="dark"] {
+    --color-background: var(--color-secondary-900);
+    --color-surface: var(--color-secondary-800);
+    --color-surface-secondary: var(--color-secondary-700);
+    --color-surface-tertiary: var(--color-secondary-600);
+
+    --color-text-primary: var(--color-secondary-50);
+    --color-text-secondary: var(--color-secondary-200);
+    --color-text-tertiary: var(--color-secondary-400);
+
+    --color-border-primary: var(--color-secondary-700);
+    --color-border-secondary: var(--color-secondary-600);
+
+    /* Accent colors for dark theme - brighter for better contrast */
+    --color-accent-primary: var(--color-primary-400);
+    --color-accent-primary-hover: var(--color-primary-300);
+    --color-accent-secondary: var(--color-secondary-400);
+    --color-accent-secondary-hover: var(--color-secondary-300);
+
+    --color-hover-light: var(--color-secondary-800);
+    --color-hover-medium: var(--color-secondary-700);
+
+    /* Active states for dark theme - need more contrast */
+    --color-active-light: var(--color-secondary-700);
+    --color-active-medium: var(--color-secondary-600);
+}
+
 /* Prevent layout shift when scrollbar appears */
 html {
     scrollbar-gutter: stable;
@@ -32,7 +244,7 @@ body {
 /* Custom scrollbar for navigation */
 .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #e5e7eb #f9fafb;
+    scrollbar-color: rgb(var(--color-border-primary)) rgb(var(--color-surface-secondary));
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -40,15 +252,34 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: #f9fafb;
+    background: rgb(var(--color-surface-secondary));
     border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #e5e7eb;
+    background: rgb(var(--color-border-primary));
     border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #d1d5db;
+    background: rgb(var(--color-border-secondary));
+}
+
+/* Enhanced skeleton animation for better theme compatibility */
+@keyframes skeleton-pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.skeleton-enhanced {
+    animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

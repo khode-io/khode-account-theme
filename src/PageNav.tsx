@@ -78,12 +78,12 @@ const NavLink = ({ path, children, icon }: NavLinkProps) => {
       className={`
         flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group
         ${isActive
-          ? 'bg-blue-50 text-blue-700'
-          : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+          ? 'bg-active-light text-accent-primary'
+          : 'text-text-secondary hover:text-text-primary hover:bg-hover-light'
         }
       `}
     >
-      <span className={`mr-3 transition-colors ${isActive ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'}`}>
+      <span className={`mr-3 transition-colors ${isActive ? 'text-accent-primary' : 'text-text-tertiary group-hover:text-text-secondary'}`}>
         {icon}
       </span>
       {children}
@@ -146,10 +146,10 @@ export const PageNav = ({ isMobileMenuOpen = false, onCloseMobileMenu, realmName
       {/* Sidebar Navigation */}
       <nav className={`
         transition-transform duration-300 ease-in-out overflow-hidden
-        md:relative md:translate-x-0 md:block md:h-[calc(100vh-6.5rem)] md:p-4
+        md:relative md:translate-x-0 md:block md:h-[calc(100vh-6.8rem)] md:p-4
         ${isMobileMenuOpen
-          ? 'fixed inset-y-0 left-0 z-50 w-64 bg-white translate-x-0 shadow-lg h-screen p-4'
-          : 'fixed inset-y-0 left-0 z-50 w-64 bg-white -translate-x-full md:translate-x-0 h-screen p-4'
+          ? 'fixed inset-y-0 left-0 z-50 w-64 bg-surface translate-x-0 shadow-lg h-screen p-4'
+          : 'fixed inset-y-0 left-0 z-50 w-64 bg-primary -translate-x-full md:translate-x-0 h-screen p-4'
         }
       `}>
         {/* Mobile header with realm name and close button */}
@@ -157,12 +157,12 @@ export const PageNav = ({ isMobileMenuOpen = false, onCloseMobileMenu, realmName
           <div className="flex items-center justify-between mb-6 md:hidden px-3">
             <div className="flex-1 flex justify-center">
               {realmName && (
-                <h2 className="text-lg font-semibold text-gray-900">{realmName}</h2>
+                <h2 className="text-lg font-semibold text-text-primary">{realmName}</h2>
               )}
             </div>
             <button
               onClick={closeMobileMenu}
-              className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors ml-2"
+              className="p-2 rounded-md text-text-tertiary hover:text-text-secondary hover:bg-hover-medium transition-colors ml-2"
               aria-label="Close navigation menu"
             >
               <X className="w-5 h-5" />
@@ -172,7 +172,7 @@ export const PageNav = ({ isMobileMenuOpen = false, onCloseMobileMenu, realmName
 
         {/* Separator line */}
         {isMobileMenuOpen && realmName && (
-          <div className="border-b border-gray-200 mb-4 md:hidden"></div>
+          <div className="border-b border-border-primary mb-4 md:hidden"></div>
         )}
 
         <div className="flex flex-col h-full overflow-hidden">
@@ -192,11 +192,11 @@ export const PageNav = ({ isMobileMenuOpen = false, onCloseMobileMenu, realmName
           </div>
 
           {/* Footer Links */}
-          <div className="flex-shrink-0 pt-4 border-t border-gray-200 mt-2">
-            <div className="flex justify-evenly text-xs text-gray-500">
-              <a href="#" className="hover:text-gray-700 transition-colors py-1">Privacy</a>
-              <a href="#" className="hover:text-gray-700 transition-colors py-1">Terms</a>
-              <a href="#" className="hover:text-gray-700 transition-colors py-1">Help</a>
+          <div className="flex-shrink-0 pt-4 border-t border-border-primary mt-2">
+            <div className="flex justify-evenly text-xs text-text-tertiary">
+              <a href="#" className="hover:text-text-secondary transition-colors py-1">Privacy</a>
+              <a href="#" className="hover:text-text-secondary transition-colors py-1">Terms</a>
+              <a href="#" className="hover:text-text-secondary transition-colors py-1">Help</a>
             </div>
           </div>
         </div>

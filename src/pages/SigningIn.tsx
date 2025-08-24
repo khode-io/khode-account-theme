@@ -126,7 +126,7 @@ export const SigningIn = () => {
                 {isDataLoading ? (
                     <>
                         {/* Basic Authentication Skeleton */}
-                        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                        <div className="rounded-2xl border border-border-primary p-6 shadow-sm">
                             <div className="mb-6">
                                 <TextSkeleton width="180px" height="28px" />
                                 <div className="mt-2">
@@ -153,12 +153,12 @@ export const SigningIn = () => {
                                         : t("signingIn.other", "Other");
 
                             return (
-                                <div key={categoryKey} className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                                <div key={categoryKey} className="rounded-2xl border border-border-primary p-6 shadow-sm">
                                     <div className="border-l-4 border-blue-600 pl-4 mb-6">
-                                        <h2 className="text-xl font-semibold text-gray-900">
+                                        <h2 className="text-xl font-semibold text-text-primary">
                                             {categoryName}
                                         </h2>
-                                        <p className="text-sm text-gray-600 mt-1">
+                                        <p className="text-sm text-text-secondary mt-1">
                                             {categoryKey === 'basic-authentication' && t("signingIn.basicAuthentication.description", "Primary authentication methods like passwords")}
                                             {categoryKey === 'two-factor' && t("signingIn.twoFactor.description", "Additional security layers for your account")}
                                             {categoryKey === 'passwordless' && t("signingIn.passwordless.description", "Sign in without passwords using biometrics or security keys")}
@@ -171,19 +171,19 @@ export const SigningIn = () => {
                                             <div key={container.type}>
                                                 {/* Show Add button if no credentials exist but createAction is available */}
                                                 {(!container.userCredentialMetadatas || container.userCredentialMetadatas.length === 0) && container.createAction && (
-                                                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-2xl bg-gray-50">
+                                                    <div className="flex items-center justify-between p-4 border border-border-primary rounded-2xl">
                                                         <div className="flex items-center space-x-3">
-                                                            <div className="text-gray-600">
+                                                            <div className="text-text-secondary">
                                                                 {getCredentialIcon(container.type)}
                                                             </div>
                                                             <div>
-                                                                <h3 className="text-sm font-medium text-gray-900">
+                                                                <h3 className="text-sm font-medium text-text-primary">
                                                                     {container.displayName && !container.displayName.includes('${')
                                                                         ? container.displayName
                                                                         : container.type}
                                                                 </h3>
                                                                 {container.helptext && !container.helptext.includes('${') && (
-                                                                    <p className="text-xs text-gray-600">
+                                                                    <p className="text-xs text-text-secondary">
                                                                         {container.helptext}
                                                                     </p>
                                                                 )}
@@ -204,21 +204,21 @@ export const SigningIn = () => {
                                                 {container.userCredentialMetadatas && container.userCredentialMetadatas.length > 0 && (
                                                     <div className="space-y-3">
                                                         {container.userCredentialMetadatas.map((credentialMeta, index) => (
-                                                            <div key={credentialMeta.credential.id || index} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-2xl shadow-sm">
+                                                            <div key={credentialMeta.credential.id || index} className="flex items-center justify-between p-3 border border-border-primary rounded-2xl shadow-sm">
                                                                 <div className="flex items-center space-x-3">
-                                                                    <div className="text-gray-500">
+                                                                    <div className="text-text-tertiary">
                                                                         {getCredentialIcon(credentialMeta.credential.type)}
                                                                     </div>
                                                                     <div>
-                                                                        <p className="text-sm font-medium text-gray-900">
+                                                                        <p className="text-sm font-medium text-text-primary">
                                                                             {credentialMeta.credential.userLabel ||
                                                                                 `${container.displayName} ${index + 1}`}
                                                                         </p>
-                                                                        <p className="text-xs text-gray-500">
+                                                                        <p className="text-xs text-text-tertiary">
                                                                             {t("signingIn.createdOn", "Created on")}: {formatDate(credentialMeta.credential.createdDate)}
                                                                         </p>
                                                                         {credentialMeta.infoMessage && (
-                                                                            <p className="text-xs text-blue-600 mt-1">
+                                                                            <p className="text-xs text-accent-primary mt-1">
                                                                                 {credentialMeta.infoMessage}
                                                                             </p>
                                                                         )}
@@ -247,7 +247,7 @@ export const SigningIn = () => {
                                                                             onClick={() => handleRemoveCredential(credentialMeta)}
                                                                             disabled={isLoading}
                                                                             leftIcon={<Trash2 className="w-3 h-3" />}
-                                                                            className="border-red-300 text-red-700 hover:bg-red-50 focus:ring-red-500 text-xs"
+                                                                            className="border-error-300 text-error-700 hover:bg-error-50 focus:ring-error-500 text-xs"
                                                                         >
                                                                             {t("signingIn.remove", "Remove")}
                                                                         </Button>
@@ -291,13 +291,13 @@ export const SigningIn = () => {
 
                         {/* Empty State */}
                         {credentials.length === 0 && (
-                            <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+                            <div className="rounded-2xl border border-border-primary p-8 shadow-sm">
                                 <div className="text-center">
-                                    <Shield className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                    <Shield className="w-12 h-12 mx-auto text-text-tertiary mb-4" />
+                                    <h3 className="text-lg font-medium text-text-primary mb-2">
                                         {t("signingIn.noCredentials", "No authentication methods configured")}
                                     </h3>
-                                    <p className="text-gray-500">
+                                    <p className="text-text-tertiary">
                                         {t("signingIn.noCredentials.description", "Contact your administrator to set up authentication methods")}
                                     </p>
                                 </div>

@@ -235,7 +235,7 @@ export const PersonalInfo = () => {
             <div className="space-y-6">
 
                 {/* General Section */}
-                <div id="general" className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <div id="general" className="rounded-2xl border border-border-primary p-6 shadow-sm">
                     {isDataLoading ? (
                         <>
                             {/* General Header Skeleton */}
@@ -286,7 +286,7 @@ export const PersonalInfo = () => {
                                 </div>
 
                                 {/* Action Buttons Skeleton */}
-                                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                                <div className="flex items-center justify-between pt-6 border-t border-border-primary">
                                     <div className="flex items-center">
                                         <RoundedSkeleton width="60px" height="42px" />
                                     </div>
@@ -299,8 +299,8 @@ export const PersonalInfo = () => {
                     ) : (
                         <>
                             {/* General Header */}
-                            <div className="border-l-4 border-blue-600 pl-4 mb-6">
-                                <h2 className="text-xl font-semibold text-gray-900">
+                            <div className="border-l-4 border-accent-primary pl-4 mb-6">
+                                <h2 className="text-xl font-semibold text-text-primary">
                                     {t("personalInfo.general", "General")}
                                 </h2>
                             </div>
@@ -365,7 +365,7 @@ export const PersonalInfo = () => {
                                 )}
 
                                 {/* Action Buttons */}
-                                <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                                <div className="flex items-center justify-between pt-6 border-t border-border-primary">
                                     <div className="flex items-center">
                                         <Button
                                             type="submit"
@@ -377,7 +377,7 @@ export const PersonalInfo = () => {
                                         </Button>
                                     </div>
 
-                                    <div className="text-xs text-gray-500">
+                                    <div className="text-xs text-text-tertiary">
                                         * {t("personalInfo.requiredFields", "Required fields")}
                                     </div>
                                 </div>

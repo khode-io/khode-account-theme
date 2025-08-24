@@ -9,8 +9,7 @@ export interface SkeletonProps {
     variant?: 'text' | 'rectangular' | 'circular' | 'rounded';
     /** Additional CSS classes */
     className?: string;
-    /** Animation type */
-    animation?: 'pulse' | 'wave' | 'none';
+    animation?: 'pulse' | 'enhanced' | 'wave' | 'none';
 }
 
 const Skeleton: React.FC<SkeletonProps> = ({
@@ -18,14 +17,15 @@ const Skeleton: React.FC<SkeletonProps> = ({
     height,
     variant = 'text',
     className = '',
-    animation = 'pulse'
+    animation = 'enhanced'
 }) => {
     // Base classes for all skeletons
-    const baseClasses = 'bg-gray-200';
+    const baseClasses = 'bg-surface-tertiary';
 
     // Animation classes
     const animationClasses = {
         pulse: 'animate-pulse',
+        enhanced: 'skeleton-enhanced',
         wave: 'animate-pulse', // Could be enhanced with custom wave animation
         none: ''
     };
@@ -122,7 +122,7 @@ export const CardSkeleton: React.FC<CardSkeletonProps> = ({
     showActions = false,
     className = ''
 }) => (
-    <div className={`p-6 border border-gray-200 rounded-2xl bg-white ${className}`}>
+    <div className={`p-6 border border-border-primary rounded-2xl bg-surface ${className}`}>
         <div className="flex items-start space-x-4">
             {showAvatar && (
                 <CircleSkeleton width="3rem" height="3rem" />

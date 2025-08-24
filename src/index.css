@@ -285,6 +285,46 @@ html {
 
 body {
     overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+/* Prevent duplicate scrollbars - New layout approach */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    height: 100%;
+}
+
+/* Ensure only main page scrollbar is visible */
+.pf-v5-c-page,
+.pf-c-page {
+    overflow: visible !important;
+}
+
+/* Reset any PatternFly container overflows */
+.pf-v5-c-page__main,
+.pf-c-page__main {
+    overflow: visible !important;
+}
+
+/* Ensure no duplicate scrollbars */
+* {
+    scrollbar-width: thin;
+}
+
+/* Hide scrollbars on all elements except main content */
+*:not(main):not(.main-content) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+*:not(main):not(.main-content)::-webkit-scrollbar {
+    display: none;
 }
 
 /* Prevent content jumping during async loading */

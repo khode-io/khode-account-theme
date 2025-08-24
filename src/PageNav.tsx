@@ -10,7 +10,6 @@ import {
   Home,
   Lock,
   TabletSmartphone,
-  X,
   LayoutGrid
 } from "lucide-react";
 
@@ -30,9 +29,10 @@ type NavLinkProps = {
   path: string;
   children: React.ReactNode;
   icon?: React.ReactNode;
+  onClick?: () => void;
 };
 
-const NavLink = ({ path, children, icon }: NavLinkProps) => {
+const NavLink = ({ path, children, icon, onClick }: NavLinkProps) => {
   const location = useLocation();
   const matches = useMatches();
   const href = useHref(path);
@@ -74,7 +74,10 @@ const NavLink = ({ path, children, icon }: NavLinkProps) => {
   return (
     <a
       href={href}
-      onClick={(e) => handleClick(e as unknown as ReactMouseEvent<HTMLAnchorElement, MouseEvent>)}
+      onClick={(e) => {
+        handleClick(e as unknown as ReactMouseEvent<HTMLAnchorElement, MouseEvent>);
+        onClick?.();
+      }}
       className={`
         flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group
         ${isActive
@@ -119,89 +122,61 @@ const getNavLabel = (path: string, t: (key: string) => string) => {
 };
 
 interface PageNavProps {
-  isMobileMenuOpen?: boolean;
   onCloseMobileMenu?: () => void;
-  realmName?: string;
 }
 
-export const PageNav = ({ isMobileMenuOpen = false, onCloseMobileMenu, realmName }: PageNavProps) => {
+export const PageNav = ({ onCloseMobileMenu }: PageNavProps) => {
   const { t } = useTranslation();
 
-  // Get all navigation items from routes (keeping original items)
+  // Get all navigation items from routes
   const navigationItems = routes[0].children?.filter((r) => r.path) || [];
 
-  // Close mobile menu when clicking outside or on a nav item
-  const closeMobileMenu = () => onCloseMobileMenu?.();
-
   return (
-    <>
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-          onClick={closeMobileMenu}
-        />
-      )}
-
-      {/* Sidebar Navigation */}
-      <nav className={`
-        transition-transform duration-300 ease-in-out overflow-hidden
-        md:relative md:translate-x-0 md:block md:h-[calc(100vh-6.8rem)] md:p-4
-        ${isMobileMenuOpen
-          ? 'fixed inset-y-0 left-0 z-50 w-64 bg-surface translate-x-0 shadow-lg h-screen p-4'
-          : 'fixed inset-y-0 left-0 z-50 w-64 bg-primary -translate-x-full md:translate-x-0 h-screen p-4'
-        }
-      `}>
-        {/* Mobile header with realm name and close button */}
-        {isMobileMenuOpen && (
-          <div className="flex items-center justify-between mb-6 md:hidden px-3">
-            <div className="flex-1 flex justify-center">
-              {realmName && (
-                <h2 className="text-lg font-semibold text-text-primary">{realmName}</h2>
-              )}
-            </div>
-            <button
-              onClick={closeMobileMenu}
-              className="p-2 rounded-md text-text-tertiary hover:text-text-secondary hover:bg-hover-medium transition-colors ml-2"
-              aria-label="Close navigation menu"
+    <nav className="h-full flex flex-col">
+      {/* Main Navigation */}
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="space-y-1 p-1">
+          {navigationItems.map(({ path }) => (
+            <NavLink
+              key={path}
+              path={path!}
+              icon={getNavIcon(path!)}
+              onClick={onCloseMobileMenu}
             >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        )}
-
-        {/* Separator line */}
-        {isMobileMenuOpen && realmName && (
-          <div className="border-b border-border-primary mb-4 md:hidden"></div>
-        )}
-
-        <div className="flex flex-col h-full overflow-hidden">
-          <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-            <div className="space-y-1 pr-1">
-              {navigationItems.map(({ path }) => (
-                <div key={path} onClick={closeMobileMenu}>
-                  <NavLink
-                    path={path!}
-                    icon={getNavIcon(path!)}
-                  >
-                    {getNavLabel(path!, t)}
-                  </NavLink>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Footer Links */}
-          <div className="flex-shrink-0 pt-4 border-t border-border-primary mt-2">
-            <div className="flex justify-evenly text-xs text-text-tertiary">
-              <a href="#" className="hover:text-text-secondary transition-colors py-1">Privacy</a>
-              <a href="#" className="hover:text-text-secondary transition-colors py-1">Terms</a>
-              <a href="#" className="hover:text-text-secondary transition-colors py-1">Help</a>
-            </div>
-          </div>
+              {getNavLabel(path!, t)}
+            </NavLink>
+          ))}
         </div>
-      </nav>
-    </>
+      </div>
+
+      {/* Footer Links - Always show */}
+      <div className="flex-shrink-0 pt-4 border-t border-border-primary">
+        {/* Desktop: Row layout */}
+        <div className="hidden md:flex justify-between text-xs text-text-tertiary px-3">
+          <a href="#" className="hover:text-text-secondary transition-colors py-1">
+            Privacy
+          </a>
+          <a href="#" className="hover:text-text-secondary transition-colors py-1">
+            Terms
+          </a>
+          <a href="#" className="hover:text-text-secondary transition-colors py-1">
+            Help
+          </a>
+        </div>
+
+        {/* Mobile: Column layout */}
+        <div className="md:hidden space-y-2 px-3">
+          <a href="#" className="block text-xs text-text-tertiary hover:text-text-secondary transition-colors py-1">
+            Privacy
+          </a>
+          <a href="#" className="block text-xs text-text-tertiary hover:text-text-secondary transition-colors py-1">
+            Terms
+          </a>
+          <a href="#" className="block text-xs text-text-tertiary hover:text-text-secondary transition-colors py-1">
+            Help
+          </a>
+        </div>
+      </div>
+    </nav>
   );
 };
-

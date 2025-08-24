@@ -42,13 +42,15 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="light">
-      <div className="min-h-screen bg-background">
-        {/* Platform Header */}
-        <header className="sticky top-0 z-30 border-b border-border-primary">
+      {/* Root container with proper height */}
+      <div className="h-screen flex flex-col bg-background">
+
+        {/* Fixed Header */}
+        <header className="flex-shrink-0 sticky top-0 z-30 border-b border-border-primary bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
-                {/* Mobile Menu Button - Only visible on mobile */}
+                {/* Mobile Menu Button */}
                 <button
                   onClick={toggleMobileMenu}
                   className="p-2 rounded-md text-text-tertiary hover:text-text-secondary hover:bg-hover-medium mr-3 md:hidden"
@@ -56,8 +58,11 @@ function App() {
                 >
                   <Menu className="w-6 h-6" />
                 </button>
-                <h1 className="text-lg font-semibold text-text-primary">{environment.realm} | Account</h1>
+                <h1 className="text-lg font-semibold text-text-primary">
+                  {environment.realm} | Account
+                </h1>
               </div>
+
               <div className="flex items-center space-x-4">
                 {/* Theme Toggle */}
                 <ThemeToggle />
@@ -121,35 +126,63 @@ function App() {
           </div>
         </header>
 
-        {/* Main Container */}
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-0">
-          <div className="flex pt-4">
-            {/* Sidebar - Hidden on mobile, shown on desktop */}
-            <div className="hidden md:block w-64 flex-shrink-0">
-              <div className="sticky top-20">
+        {/* Main Content Area - Takes remaining height and allows scrolling */}
+        <div className="flex-1 flex min-h-0">
+          {/* Container wrapper for both sidebar and main content */}
+          <div className="w-full max-w-7xl mx-auto flex min-h-0">
+            {/* Desktop Sidebar - Fixed width, starts from container left edge */}
+            <aside className="hidden md:flex flex-shrink-0 w-64">
+              <div className="w-full p-4">
                 <PageNav />
               </div>
-            </div>
+            </aside>
 
-            {/* Mobile Navigation - Only shown on mobile */}
-            <div className="md:hidden">
-              <PageNav
-                isMobileMenuOpen={isMobileMenuOpen}
-                onCloseMobileMenu={closeMobileMenu}
-                realmName={environment.realm}
+            {/* Mobile Navigation Overlay */}
+            <>
+              {/* Backdrop */}
+              <div
+                className={`fixed inset-0 bg-black z-40 md:hidden transition-opacity duration-300 ease-in-out ${isMobileMenuOpen ? 'bg-opacity-50' : 'bg-opacity-0 pointer-events-none'
+                  }`}
+                onClick={closeMobileMenu}
               />
-            </div>
-
-            {/* Main Content */}
-            <div className="flex-1 min-h-[600px] sm:px-4 lg:px-24">
-              <Suspense fallback={
-                <div className="flex items-center justify-center h-64">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary"></div>
+              {/* Mobile Sidebar */}
+              <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-surface shadow-lg md:hidden transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+                }`}>
+                <div className="h-full flex flex-col">
+                  <div className="flex-shrink-0 p-4">
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-lg font-semibold text-text-primary">
+                        {environment.realm}
+                      </h2>
+                      <button
+                        onClick={closeMobileMenu}
+                        className="p-2 rounded-md text-text-tertiary hover:text-text-secondary hover:bg-hover-medium"
+                        aria-label="Close navigation menu"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <div className="border-b border-border-primary"></div>
+                  </div>
+                  <div className="flex-1 p-4 pt-0 overflow-y-auto min-h-0">
+                    <PageNav onCloseMobileMenu={closeMobileMenu} />
+                  </div>
                 </div>
-              }>
-                <Outlet />
-              </Suspense>
-            </div>
+              </div>
+            </>
+
+            {/* Main Content - Scrollable area */}
+            <main className="flex-1 min-w-0 overflow-y-auto main-content lg:px-24">
+              <div className="px-4 sm:px-6 lg:px-8">
+                <Suspense fallback={
+                  <div className="flex items-center justify-center h-64">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary"></div>
+                  </div>
+                }>
+                  <Outlet />
+                </Suspense>
+              </div>
+            </main>
           </div>
         </div>
 

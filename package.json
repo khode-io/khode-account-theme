@@ -28,7 +28,7 @@
     "@octokit/rest": "^20.1.1",
     "@types/react": "^18.2.67",
     "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react-swc": "^3.7.0",
+    "@vitejs/plugin-react-swc": "^4.0.1",
     "autoprefixer": "^10.4.21",
     "gunzip-maybe": "^1.4.2",
     "postcss": "^8.5.6",

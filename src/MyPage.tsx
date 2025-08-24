@@ -3,19 +3,19 @@ import {
   UserRepresentation,
   getPersonalInfo,
   savePersonalInfo,
-  useAlerts,
   useEnvironment,
   usePromise,
 } from "@keycloak/keycloak-account-ui";
 import { Page, Button } from "./components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { showSuccessToast, showErrorToast } from "./utils";
 
 export const MyPage = () => {
   const { t } = useTranslation();
   const context = useEnvironment<AccountEnvironment>();
   const [personalInfo, setPersonalInfo] = useState<UserRepresentation>();
-  const { addAlert, addError } = useAlerts();
+
   const [isLoading, setIsLoading] = useState(false);
 
   usePromise((signal) => getPersonalInfo({ signal, context }), setPersonalInfo);
@@ -26,10 +26,10 @@ export const MyPage = () => {
 
     try {
       await savePersonalInfo(context, personalInfo);
-      addAlert(t("myPage.save.success"));
+      showSuccessToast(t("myPage.save.success"));
     } catch (error) {
       console.error(error);
-      addError("Not able to save personal info");
+      showErrorToast("Not able to save personal info");
     } finally {
       setIsLoading(false);
     }

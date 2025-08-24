@@ -4,19 +4,19 @@ import {
     getLinkedAccounts,
     linkAccount,
     unLinkAccount,
-    useAlerts,
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
 import { Page, Button, TextSkeleton, CardSkeleton } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { showSuccessToast, showErrorToast } from "../utils";
 
 export const LinkedAccounts = () => {
     const { t } = useTranslation();
     const context = useEnvironment<AccountEnvironment>();
     const [linkedAccounts, setLinkedAccounts] = useState<LinkedAccountRepresentation[]>([]);
-    const { addAlert, addError } = useAlerts();
+
     const [isLoading, setIsLoading] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(true);
 
@@ -127,12 +127,12 @@ export const LinkedAccounts = () => {
                 // Redirect to the provider's linking page
                 window.location.href = result.accountLinkUri;
             } else {
-                addAlert(t("linkedAccounts.link.success", "Account linked successfully"));
+                showSuccessToast(t("linkedAccounts.link.success", "Account linked successfully"));
                 await refreshLinkedAccounts();
             }
         } catch (error) {
             console.error('Failed to link account:', error);
-            addError(t("linkedAccounts.link.error", "Failed to link account"));
+            showErrorToast(t("linkedAccounts.link.error", "Failed to link account"));
         } finally {
             setIsLoading(false);
         }
@@ -142,11 +142,11 @@ export const LinkedAccounts = () => {
         setIsLoading(true);
         try {
             await unLinkAccount(context, account);
-            addAlert(t("linkedAccounts.unlink.success", "Account unlinked successfully"));
+            showSuccessToast(t("linkedAccounts.unlink.success", "Account unlinked successfully"));
             await refreshLinkedAccounts();
         } catch (error) {
             console.error('Failed to unlink account:', error);
-            addError(t("linkedAccounts.unlink.error", "Failed to unlink account"));
+            showErrorToast(t("linkedAccounts.unlink.error", "Failed to unlink account"));
         } finally {
             setIsLoading(false);
         }

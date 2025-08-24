@@ -3,13 +3,13 @@ import {
     DeviceRepresentation,
     getDevices,
     deleteSession,
-    useAlerts,
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
 import { Page, Button, Dialog, TextSkeleton, CardSkeleton } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { showSuccessToast, showErrorToast } from "../utils";
 import {
     Smartphone,
     Monitor,
@@ -20,7 +20,7 @@ export const DeviceActivity = () => {
     const { t } = useTranslation();
     const context = useEnvironment<AccountEnvironment>();
     const [devices, setDevices] = useState<DeviceRepresentation[]>([]);
-    const { addAlert, addError } = useAlerts();
+
     const [isLoading, setIsLoading] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(true);
     const [confirmDialog, setConfirmDialog] = useState<{
@@ -125,11 +125,11 @@ export const DeviceActivity = () => {
         setIsLoading(true);
         try {
             await deleteSession(context, confirmDialog.sessionId);
-            addAlert(t("deviceActivity.signOut.success", "Session signed out successfully"));
+            showSuccessToast(t("deviceActivity.signOut.success", "Session signed out successfully"));
             await refreshDevices();
         } catch (error) {
             console.error('Failed to sign out session:', error);
-            addError(t("deviceActivity.signOut.error", "Failed to sign out session"));
+            showErrorToast(t("deviceActivity.signOut.error", "Failed to sign out session"));
         } finally {
             setIsLoading(false);
             setConfirmDialog({ isOpen: false });
@@ -148,11 +148,11 @@ export const DeviceActivity = () => {
         try {
             // Sign out all sessions (no session ID means all sessions)
             await deleteSession(context);
-            addAlert(t("deviceActivity.signOutAll.success", "All sessions signed out successfully"));
+            showSuccessToast(t("deviceActivity.signOutAll.success", "All sessions signed out successfully"));
             await refreshDevices();
         } catch (error) {
             console.error('Failed to sign out all sessions:', error);
-            addError(t("deviceActivity.signOutAll.error", "Failed to sign out all sessions"));
+            showErrorToast(t("deviceActivity.signOutAll.error", "Failed to sign out all sessions"));
         } finally {
             setIsLoading(false);
             setConfirmDialog({ isOpen: false });

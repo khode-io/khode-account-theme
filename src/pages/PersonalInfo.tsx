@@ -4,19 +4,18 @@ import {
     UserProfileAttributeMetadata,
     getPersonalInfo,
     savePersonalInfo,
-    useAlerts,
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
 import { Page, TextField, SelectField, TextAreaField, Button, TextSkeleton, RoundedSkeleton } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { showPromiseToast } from "../utils";
 
 export const PersonalInfo = () => {
     const { t } = useTranslation();
     const context = useEnvironment<AccountEnvironment>();
     const [personalInfo, setPersonalInfo] = useState<UserRepresentation>();
-    const { addAlert, addError } = useAlerts();
     const [isLoading, setIsLoading] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(true);
 
@@ -33,15 +32,15 @@ export const PersonalInfo = () => {
         event.preventDefault();
         setIsLoading(true);
 
-        try {
-            await savePersonalInfo(context, personalInfo);
-            addAlert(t("personalInfo.save.success", "Personal information updated successfully"));
-        } catch (error) {
-            console.error(error);
-            addError(t("personalInfo.save.error", "Failed to update personal information"));
-        } finally {
+        const savePromise = savePersonalInfo(context, personalInfo);
+
+        showPromiseToast(savePromise, {
+            loading: t("personalInfo.save.loading", "Saving personal information..."),
+            success: t("personalInfo.save.success", "Personal information updated successfully"),
+            error: t("personalInfo.save.error", "Failed to update personal information")
+        }).finally(() => {
             setIsLoading(false);
-        }
+        });
     };
 
     // Get user profile attributes from metadata

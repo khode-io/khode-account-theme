@@ -3,13 +3,13 @@ import {
     CredentialContainer,
     CredentialMetadataRepresentation,
     getCredentials,
-    useAlerts,
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
 import { Page, Button, TextSkeleton, CardSkeleton } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { showSuccessToast, showErrorToast } from "../utils";
 import {
     Key,
     Smartphone,
@@ -27,7 +27,7 @@ export const SigningIn = () => {
     const { t } = useTranslation();
     const context = useEnvironment<AccountEnvironment>();
     const [credentials, setCredentials] = useState<CredentialContainer[]>([]);
-    const { addAlert, addError } = useAlerts();
+
     const [isLoading, setIsLoading] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(true);
 
@@ -94,12 +94,11 @@ export const SigningIn = () => {
         try {
             // This would typically call a remove API - for now we'll show a placeholder
             // In a real implementation, this would call the Keycloak admin API
-            console.log('Removing credential:', credential.credential.id);
-            addAlert(t("signingIn.remove.success", "Credential removed successfully"));
+            console.log(credential);
+            showSuccessToast(t("signingIn.remove.success", "Credential removed successfully"));
             await refreshCredentials();
         } catch (error) {
-            console.error('Failed to remove credential:', error);
-            addError(t("signingIn.remove.error", "Failed to remove credential"));
+            showErrorToast(t("signingIn.remove.error", "Failed to remove credential"));
         } finally {
             setIsLoading(false);
         }

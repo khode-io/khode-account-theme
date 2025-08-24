@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     useEnvironment,
-    useAlerts,
     usePromise,
     getApplications,
     deleteConsent,
@@ -11,11 +10,12 @@ import {
 import { Page, Button, TextSkeleton, CardSkeleton } from '../components';
 import type { AccountEnvironment } from '@keycloak/keycloak-account-ui';
 import { FileText, CheckCircle, XCircle, Trash2 } from 'lucide-react';
+import { showErrorToast, showSuccessToast } from '../utils';
 
 export const Applications: React.FC = () => {
     const { t } = useTranslation();
     const context = useEnvironment<AccountEnvironment>();
-    const { addAlert } = useAlerts();
+
     const [applications, setApplications] = useState<ClientRepresentation[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(true);
@@ -38,7 +38,7 @@ export const Applications: React.FC = () => {
             const data = await getApplications({ context });
             setApplications(data);
         } catch (error) {
-            addAlert(t("applications.fetchError", "Failed to fetch applications"));
+            showErrorToast(t("applications.fetchError", "Failed to fetch applications"));
         } finally {
             setIsLoading(false);
         }
@@ -56,10 +56,10 @@ export const Applications: React.FC = () => {
         try {
             setIsLoading(true);
             await deleteConsent(context, application.clientId);
-            addAlert(t("applications.revokeConsent.success", "Access revoked successfully"));
+            showSuccessToast(t("applications.revokeConsent.success", "Access revoked successfully"));
             await refreshApplications();
         } catch (error) {
-            addAlert(t("applications.revokeConsent.error", "Failed to revoke access"));
+            showErrorToast(t("applications.revokeConsent.error", "Failed to revoke access"));
         } finally {
             setIsLoading(false);
         }

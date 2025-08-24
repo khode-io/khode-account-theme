@@ -127,7 +127,6 @@ export const Applications: React.FC = () => {
                             <div className="space-y-4">
                                 <CardSkeleton showAvatar={true} lines={2} showActions={true} />
                                 <CardSkeleton showAvatar={true} lines={1} showActions={true} />
-                                <CardSkeleton showAvatar={true} lines={2} showActions={true} />
                             </div>
                         </>
                     ) : (

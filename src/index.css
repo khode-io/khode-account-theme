@@ -125,6 +125,38 @@
     --color-error-950: 69 10 10;
     /* #450a0a */
 
+    /* GitHub Dark Theme Color Palette */
+    --github-dark-bg: 13 17 23;
+    /* #0d1117 - Main background */
+    --github-dark-bg-primary: 22 27 34;
+    /* #161b22 - Primary background */
+    --github-dark-bg-secondary: 33 38 45;
+    /* #21262d - Secondary background */
+    --github-dark-bg-tertiary: 48 54 61;
+    /* #30363d - Tertiary background */
+    --github-dark-text-primary: 201 209 217;
+    /* #c9d1d9 - Primary text */
+    --github-dark-text-secondary: 139 148 158;
+    /* #8b949e - Secondary text */
+    --github-dark-text-tertiary: 110 118 129;
+    /* #6e7681 - Tertiary text */
+    --github-dark-border: 48 54 61;
+    /* #30363d - Border color */
+    --github-dark-border-muted: 33 38 45;
+    /* #21262d - Muted border */
+    --github-dark-accent-blue: 88 166 255;
+    /* #58a6ff - Accent blue */
+    --github-dark-accent-green: 63 185 80;
+    /* #3fb950 - Accent green */
+    --github-dark-accent-red: 248 81 73;
+    /* #f85149 - Accent red */
+    --github-dark-accent-yellow: 210 153 34;
+    /* #d29922 - Accent yellow */
+    --github-dark-accent-orange: 219 109 40;
+    /* #db6d28 - Accent orange */
+    --github-dark-accent-purple: 188 140 255;
+    /* #bc8cff - Accent purple */
+
     /* Semantic Color Mappings - Easy to update for different themes */
     --color-background: 255 255 255;
     /* #ffffff - Pure white background */
@@ -160,58 +192,82 @@
     --color-status-info: var(--color-primary-600);
 }
 
-/* Dark Theme Support (Optional - can be activated later) */
+/* Auto Dark Theme Support - GitHub Dark Default */
 @media (prefers-color-scheme: dark) {
     :root[data-theme="auto"] {
-        --color-background: var(--color-secondary-900);
-        --color-surface: var(--color-secondary-800);
-        --color-surface-secondary: var(--color-secondary-700);
-        --color-surface-tertiary: var(--color-secondary-600);
+        /* GitHub Dark Theme Backgrounds */
+        --color-background: var(--github-dark-bg);
+        --color-surface: var(--github-dark-bg-primary);
+        --color-surface-secondary: var(--github-dark-bg-secondary);
+        --color-surface-tertiary: var(--github-dark-bg-tertiary);
 
-        --color-text-primary: var(--color-secondary-50);
-        --color-text-secondary: var(--color-secondary-200);
-        --color-text-tertiary: var(--color-secondary-400);
+        /* GitHub Dark Theme Text Colors */
+        --color-text-primary: var(--github-dark-text-primary);
+        --color-text-secondary: var(--github-dark-text-secondary);
+        --color-text-tertiary: var(--github-dark-text-tertiary);
+        --color-text-inverse: var(--github-dark-bg);
 
-        --color-border-primary: var(--color-secondary-700);
-        --color-border-secondary: var(--color-secondary-600);
+        /* GitHub Dark Theme Borders */
+        --color-border-primary: var(--github-dark-border);
+        --color-border-secondary: var(--github-dark-border-muted);
+        --color-border-focus: var(--github-dark-accent-blue);
 
-        /* Accent colors for dark theme - brighter for better contrast */
-        --color-accent-primary: var(--color-primary-400);
-        --color-accent-primary-hover: var(--color-primary-300);
-        --color-accent-secondary: var(--color-secondary-400);
-        --color-accent-secondary-hover: var(--color-secondary-300);
+        /* GitHub Dark Theme Accent Colors */
+        --color-accent-primary: var(--github-dark-accent-blue);
+        --color-accent-primary-hover: var(--github-dark-accent-blue);
+        --color-accent-secondary: var(--github-dark-text-secondary);
+        --color-accent-secondary-hover: var(--github-dark-text-primary);
 
-        --color-hover-light: var(--color-secondary-800);
-        --color-hover-medium: var(--color-secondary-700);
+        /* GitHub Dark Theme Interactive States */
+        --color-hover-light: var(--github-dark-bg-secondary);
+        --color-hover-medium: var(--github-dark-bg-tertiary);
+        --color-active-light: var(--github-dark-bg-tertiary);
+        --color-active-medium: var(--github-dark-bg-secondary);
+
+        /* GitHub Dark Theme Status Colors */
+        --color-status-success: var(--github-dark-accent-green);
+        --color-status-warning: var(--github-dark-accent-yellow);
+        --color-status-error: var(--github-dark-accent-red);
+        --color-status-info: var(--github-dark-accent-blue);
     }
 }
 
-/* Manual Dark Theme */
+/* Manual Dark Theme - GitHub Dark Default */
 :root[data-theme="dark"] {
-    --color-background: var(--color-secondary-900);
-    --color-surface: var(--color-secondary-800);
-    --color-surface-secondary: var(--color-secondary-700);
-    --color-surface-tertiary: var(--color-secondary-600);
+    /* GitHub Dark Theme Backgrounds */
+    --color-background: var(--github-dark-bg);
+    --color-surface: var(--github-dark-bg-primary);
+    --color-surface-secondary: var(--github-dark-bg-secondary);
+    --color-surface-tertiary: var(--github-dark-bg-tertiary);
 
-    --color-text-primary: var(--color-secondary-50);
-    --color-text-secondary: var(--color-secondary-200);
-    --color-text-tertiary: var(--color-secondary-400);
+    /* GitHub Dark Theme Text Colors */
+    --color-text-primary: var(--github-dark-text-primary);
+    --color-text-secondary: var(--github-dark-text-secondary);
+    --color-text-tertiary: var(--github-dark-text-tertiary);
+    --color-text-inverse: var(--github-dark-bg);
 
-    --color-border-primary: var(--color-secondary-700);
-    --color-border-secondary: var(--color-secondary-600);
+    /* GitHub Dark Theme Borders */
+    --color-border-primary: var(--github-dark-border);
+    --color-border-secondary: var(--github-dark-border-muted);
+    --color-border-focus: var(--github-dark-accent-blue);
 
-    /* Accent colors for dark theme - brighter for better contrast */
-    --color-accent-primary: var(--color-primary-400);
-    --color-accent-primary-hover: var(--color-primary-300);
-    --color-accent-secondary: var(--color-secondary-400);
-    --color-accent-secondary-hover: var(--color-secondary-300);
+    /* GitHub Dark Theme Accent Colors */
+    --color-accent-primary: var(--github-dark-accent-blue);
+    --color-accent-primary-hover: var(--github-dark-accent-blue);
+    --color-accent-secondary: var(--github-dark-text-secondary);
+    --color-accent-secondary-hover: var(--github-dark-text-primary);
 
-    --color-hover-light: var(--color-secondary-800);
-    --color-hover-medium: var(--color-secondary-700);
+    /* GitHub Dark Theme Interactive States */
+    --color-hover-light: var(--github-dark-bg-secondary);
+    --color-hover-medium: var(--github-dark-bg-tertiary);
+    --color-active-light: var(--github-dark-bg-tertiary);
+    --color-active-medium: var(--github-dark-bg-secondary);
 
-    /* Active states for dark theme - need more contrast */
-    --color-active-light: var(--color-secondary-700);
-    --color-active-medium: var(--color-secondary-600);
+    /* GitHub Dark Theme Status Colors */
+    --color-status-success: var(--github-dark-accent-green);
+    --color-status-warning: var(--github-dark-accent-yellow);
+    --color-status-error: var(--github-dark-accent-red);
+    --color-status-info: var(--github-dark-accent-blue);
 }
 
 /* Prevent layout shift when scrollbar appears */

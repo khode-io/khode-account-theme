@@ -1,23 +1,18 @@
 import React from 'react';
 
-export interface TextFieldProps {
+export interface SelectFieldProps {
     /**
      * The label text for the field
      */
     label?: string;
 
     /**
-     * The input type (text, email, password, etc.)
-     */
-    type?: 'text' | 'email' | 'password' | 'tel' | 'url' | 'number' | 'search';
-
-    /**
-     * The input id and name
+     * The select id and name
      */
     id?: string;
 
     /**
-     * The input name attribute
+     * The select name attribute
      */
     name?: string;
 
@@ -27,7 +22,12 @@ export interface TextFieldProps {
     value?: string;
 
     /**
-     * Placeholder text
+     * The options to display
+     */
+    options: Array<{ value: string; label: string }>;
+
+    /**
+     * Placeholder text for empty option
      */
     placeholder?: string;
 
@@ -47,7 +47,7 @@ export interface TextFieldProps {
     disabled?: boolean;
 
     /**
-     * Help text to display below the input
+     * Help text to display below the select
      */
     helpText?: string;
 
@@ -57,7 +57,7 @@ export interface TextFieldProps {
     error?: string;
 
     /**
-     * Additional CSS classes for the input
+     * Additional CSS classes for the select
      */
     className?: string;
 
@@ -67,42 +67,32 @@ export interface TextFieldProps {
     containerClassName?: string;
 
     /**
-     * Layout variant - 'stacked' (label above input) or 'horizontal' (label beside input)
+     * Layout variant - 'stacked' (label above select) or 'horizontal' (label beside select)
      */
     layout?: 'stacked' | 'horizontal';
 
     /**
      * Change handler
      */
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 
     /**
      * Blur handler
      */
-    onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+    onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
 
     /**
      * Focus handler
      */
-    onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-
-    /**
-     * Minimum length for input validation
-     */
-    minLength?: number;
-
-    /**
-     * Maximum length for input validation
-     */
-    maxLength?: number;
+    onFocus?: (event: React.FocusEvent<HTMLSelectElement>) => void;
 }
 
 /**
- * TextField component with modern styling using Tailwind CSS
+ * SelectField component with modern styling using Tailwind CSS
  * 
  * Features:
  * - Clean, modern design with rounded corners
- * - Support for different input types
+ * - Support for options with custom labels and values
  * - Required field indicators
  * - Read-only and disabled states
  * - Error states with validation styling
@@ -112,22 +102,24 @@ export interface TextFieldProps {
  * 
  * @example
  * ```tsx
- * <TextField
- *   label="Email"
- *   type="email"
- *   value={email}
- *   onChange={(e) => setEmail(e.target.value)}
+ * <SelectField
+ *   label="Premium Status"
+ *   value={isPremium}
+ *   options={[
+ *     { value: 'Yes', label: 'Yes' },
+ *     { value: 'No', label: 'No' }
+ *   ]}
+ *   onChange={(e) => setIsPremium(e.target.value)}
  *   required
- *   helpText="We'll never share your email"
  * />
  * ```
  */
-export const TextField: React.FC<TextFieldProps> = ({
+export const SelectField: React.FC<SelectFieldProps> = ({
     label,
-    type = 'text',
     id,
     name,
     value = '',
+    options = [],
     placeholder,
     required = false,
     readOnly = false,
@@ -139,15 +131,13 @@ export const TextField: React.FC<TextFieldProps> = ({
     layout = 'horizontal',
     onChange,
     onBlur,
-    onFocus,
-    minLength,
-    maxLength
+    onFocus
 }) => {
     // Generate id if not provided
-    const fieldId = id || name || `field-${Math.random().toString(36).substr(2, 9)}`;
+    const fieldId = id || name || `select-${Math.random().toString(36).substr(2, 9)}`;
 
-    // Base input classes
-    const baseInputClasses = `
+    // Base select classes
+    const baseSelectClasses = `
     w-full px-3 py-2 border rounded-xl shadow-sm 
     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
     transition-colors bg-white text-gray-900
@@ -160,7 +150,7 @@ export const TextField: React.FC<TextFieldProps> = ({
             ? 'bg-gray-50 text-gray-500 cursor-not-allowed border-gray-300'
             : 'border-gray-300 hover:border-gray-400';
 
-    const inputClasses = `${baseInputClasses} ${stateClasses} ${className}`;
+    const selectClasses = `${baseSelectClasses} ${stateClasses} ${className}`;
 
     // Container classes based on layout
     const containerClasses = layout === 'horizontal'
@@ -171,7 +161,7 @@ export const TextField: React.FC<TextFieldProps> = ({
         ? 'md:col-span-1 block text-sm font-medium text-gray-700'
         : 'block text-sm font-medium text-gray-700';
 
-    const inputContainerClasses = layout === 'horizontal'
+    const selectContainerClasses = layout === 'horizontal'
         ? 'md:col-span-2'
         : '';
 
@@ -186,20 +176,15 @@ export const TextField: React.FC<TextFieldProps> = ({
                 </div>
             )}
 
-            {/* Input Container */}
-            <div className={inputContainerClasses}>
-                <input
-                    type={type}
+            {/* Select Container */}
+            <div className={selectContainerClasses}>
+                <select
                     id={fieldId}
                     name={name || fieldId}
                     value={value}
-                    placeholder={placeholder}
                     required={required}
-                    readOnly={readOnly}
-                    disabled={disabled}
-                    minLength={minLength}
-                    maxLength={maxLength}
-                    className={inputClasses}
+                    disabled={disabled || readOnly}
+                    className={selectClasses}
                     onChange={onChange}
                     onBlur={onBlur}
                     onFocus={onFocus}
@@ -207,7 +192,21 @@ export const TextField: React.FC<TextFieldProps> = ({
                         (helpText || error) ? `${fieldId}-help` : undefined
                     }
                     aria-invalid={error ? 'true' : 'false'}
-                />
+                >
+                    {/* Placeholder option */}
+                    {placeholder && (
+                        <option value="" disabled>
+                            {placeholder}
+                        </option>
+                    )}
+
+                    {/* Options */}
+                    {options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </select>
 
                 {/* Help Text or Error */}
                 {(helpText || error) && (
@@ -224,4 +223,4 @@ export const TextField: React.FC<TextFieldProps> = ({
     );
 };
 
-export default TextField;
+export default SelectField;

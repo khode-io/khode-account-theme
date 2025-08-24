@@ -1,23 +1,18 @@
 import React from 'react';
 
-export interface TextFieldProps {
+export interface TextAreaFieldProps {
     /**
      * The label text for the field
      */
     label?: string;
 
     /**
-     * The input type (text, email, password, etc.)
-     */
-    type?: 'text' | 'email' | 'password' | 'tel' | 'url' | 'number' | 'search';
-
-    /**
-     * The input id and name
+     * The textarea id and name
      */
     id?: string;
 
     /**
-     * The input name attribute
+     * The textarea name attribute
      */
     name?: string;
 
@@ -47,7 +42,7 @@ export interface TextFieldProps {
     disabled?: boolean;
 
     /**
-     * Help text to display below the input
+     * Help text to display below the textarea
      */
     helpText?: string;
 
@@ -57,7 +52,22 @@ export interface TextFieldProps {
     error?: string;
 
     /**
-     * Additional CSS classes for the input
+     * Number of rows for the textarea
+     */
+    rows?: number;
+
+    /**
+     * Minimum length for textarea validation
+     */
+    minLength?: number;
+
+    /**
+     * Maximum length for textarea validation
+     */
+    maxLength?: number;
+
+    /**
+     * Additional CSS classes for the textarea
      */
     className?: string;
 
@@ -67,64 +77,54 @@ export interface TextFieldProps {
     containerClassName?: string;
 
     /**
-     * Layout variant - 'stacked' (label above input) or 'horizontal' (label beside input)
+     * Layout variant - 'stacked' (label above textarea) or 'horizontal' (label beside textarea)
      */
     layout?: 'stacked' | 'horizontal';
 
     /**
      * Change handler
      */
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 
     /**
      * Blur handler
      */
-    onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+    onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
 
     /**
      * Focus handler
      */
-    onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-
-    /**
-     * Minimum length for input validation
-     */
-    minLength?: number;
-
-    /**
-     * Maximum length for input validation
-     */
-    maxLength?: number;
+    onFocus?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
 }
 
 /**
- * TextField component with modern styling using Tailwind CSS
+ * TextAreaField component with modern styling using Tailwind CSS
  * 
  * Features:
  * - Clean, modern design with rounded corners
- * - Support for different input types
+ * - Support for multiline text input
  * - Required field indicators
  * - Read-only and disabled states
  * - Error states with validation styling
  * - Help text support
  * - Horizontal and stacked layouts
  * - Accessible markup with proper labeling
+ * - Character count validation
  * 
  * @example
  * ```tsx
- * <TextField
- *   label="Email"
- *   type="email"
- *   value={email}
- *   onChange={(e) => setEmail(e.target.value)}
- *   required
- *   helpText="We'll never share your email"
+ * <TextAreaField
+ *   label="Description"
+ *   value={description}
+ *   onChange={(e) => setDescription(e.target.value)}
+ *   rows={4}
+ *   maxLength={500}
+ *   helpText="Describe yourself in a few sentences"
  * />
  * ```
  */
-export const TextField: React.FC<TextFieldProps> = ({
+export const TextAreaField: React.FC<TextAreaFieldProps> = ({
     label,
-    type = 'text',
     id,
     name,
     value = '',
@@ -134,23 +134,24 @@ export const TextField: React.FC<TextFieldProps> = ({
     disabled = false,
     helpText,
     error,
+    rows = 3,
+    minLength,
+    maxLength,
     className = '',
     containerClassName = '',
     layout = 'horizontal',
     onChange,
     onBlur,
-    onFocus,
-    minLength,
-    maxLength
+    onFocus
 }) => {
     // Generate id if not provided
-    const fieldId = id || name || `field-${Math.random().toString(36).substr(2, 9)}`;
+    const fieldId = id || name || `textarea-${Math.random().toString(36).substr(2, 9)}`;
 
-    // Base input classes
-    const baseInputClasses = `
+    // Base textarea classes
+    const baseTextAreaClasses = `
     w-full px-3 py-2 border rounded-xl shadow-sm 
     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-    transition-colors bg-white text-gray-900
+    transition-colors bg-white text-gray-900 resize-vertical
   `.trim();
 
     // State-specific classes
@@ -160,7 +161,7 @@ export const TextField: React.FC<TextFieldProps> = ({
             ? 'bg-gray-50 text-gray-500 cursor-not-allowed border-gray-300'
             : 'border-gray-300 hover:border-gray-400';
 
-    const inputClasses = `${baseInputClasses} ${stateClasses} ${className}`;
+    const textAreaClasses = `${baseTextAreaClasses} ${stateClasses} ${className}`;
 
     // Container classes based on layout
     const containerClasses = layout === 'horizontal'
@@ -171,9 +172,14 @@ export const TextField: React.FC<TextFieldProps> = ({
         ? 'md:col-span-1 block text-sm font-medium text-gray-700'
         : 'block text-sm font-medium text-gray-700';
 
-    const inputContainerClasses = layout === 'horizontal'
+    const textAreaContainerClasses = layout === 'horizontal'
         ? 'md:col-span-2'
         : '';
+
+    // Character count display
+    const showCharacterCount = maxLength && value.length > 0;
+    const characterCountText = showCharacterCount ? `${value.length}/${maxLength}` : '';
+    const isOverLimit = maxLength && value.length > maxLength;
 
     return (
         <div className={containerClasses}>
@@ -186,10 +192,9 @@ export const TextField: React.FC<TextFieldProps> = ({
                 </div>
             )}
 
-            {/* Input Container */}
-            <div className={inputContainerClasses}>
-                <input
-                    type={type}
+            {/* TextArea Container */}
+            <div className={textAreaContainerClasses}>
+                <textarea
                     id={fieldId}
                     name={name || fieldId}
                     value={value}
@@ -197,9 +202,10 @@ export const TextField: React.FC<TextFieldProps> = ({
                     required={required}
                     readOnly={readOnly}
                     disabled={disabled}
+                    rows={rows}
                     minLength={minLength}
                     maxLength={maxLength}
-                    className={inputClasses}
+                    className={textAreaClasses}
                     onChange={onChange}
                     onBlur={onBlur}
                     onFocus={onFocus}
@@ -208,6 +214,13 @@ export const TextField: React.FC<TextFieldProps> = ({
                     }
                     aria-invalid={error ? 'true' : 'false'}
                 />
+
+                {/* Character Count */}
+                {showCharacterCount && (
+                    <div className={`mt-1 text-xs text-right ${isOverLimit ? 'text-red-600' : 'text-gray-500'}`}>
+                        {characterCountText}
+                    </div>
+                )}
 
                 {/* Help Text or Error */}
                 {(helpText || error) && (
@@ -224,4 +237,4 @@ export const TextField: React.FC<TextFieldProps> = ({
     );
 };
 
-export default TextField;
+export default TextAreaField;

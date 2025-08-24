@@ -8,7 +8,7 @@ import {
     useEnvironment,
     usePromise,
 } from "@keycloak/keycloak-account-ui";
-import { Page, TextField, Button, TextSkeleton, RoundedSkeleton } from "../components";
+import { Page, TextField, SelectField, TextAreaField, Button, TextSkeleton, RoundedSkeleton } from "../components";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -76,13 +76,62 @@ export const PersonalInfo = () => {
         }
     };
 
-    // Helper function to get input type based on attribute name and validators
+    // Helper function to get input type based on attribute annotations and validators
     const getInputType = (attribute: UserProfileAttributeMetadata) => {
-        if (attribute.name === 'email') return 'email';
-        if (attribute.validators?.email) return 'email';
-        if (attribute.validators?.uri) return 'url';
-        if (attribute.name.toLowerCase().includes('phone')) return 'tel';
+        // Check for explicit input type annotation
+        if (attribute.annotations?.inputType) {
+            return attribute.annotations.inputType;
+        }
+
+        // Check validators for specific types
+        if (attribute.name === 'email' || attribute.validators?.email) return 'email';
+        if (attribute.validators?.uri || attribute.name.toLowerCase().includes('url') || attribute.name.toLowerCase().includes('website')) return 'url';
+        if (attribute.name.toLowerCase().includes('phone') || attribute.name.toLowerCase().includes('mobile') || attribute.name.toLowerCase().includes('tel')) return 'tel';
+        if (attribute.name.toLowerCase().includes('number') || attribute.name.toLowerCase().includes('age') || attribute.validators?.integer || attribute.validators?.double) return 'number';
+        if (attribute.name.toLowerCase().includes('password')) return 'password';
+        if (attribute.name.toLowerCase().includes('search')) return 'search';
+
+        // Check for options validator (indicates select field)
+        if (attribute.validators?.options) return 'select';
+
+        // Check for textarea annotation or long text fields
+        if (attribute.annotations?.inputType === 'textarea' ||
+            attribute.name.toLowerCase().includes('description') ||
+            attribute.name.toLowerCase().includes('bio') ||
+            attribute.name.toLowerCase().includes('about') ||
+            attribute.name.toLowerCase().includes('comment') ||
+            attribute.name.toLowerCase().includes('note')) {
+            return 'textarea';
+        }
+
         return 'text';
+    };
+
+    // Helper function to get options for select fields
+    const getSelectOptions = (attribute: UserProfileAttributeMetadata) => {
+        if (attribute.validators?.options?.options) {
+            return attribute.validators.options.options.map((option: string) => ({
+                value: option,
+                label: option
+            }));
+        }
+        return [];
+    };
+
+    // Helper function to get validation attributes
+    const getValidationAttributes = (attribute: UserProfileAttributeMetadata) => {
+        const validationAttrs: any = {};
+
+        if (attribute.validators?.length) {
+            if (attribute.validators.length.min) {
+                validationAttrs.minLength = parseInt(attribute.validators.length.min);
+            }
+            if (attribute.validators.length.max) {
+                validationAttrs.maxLength = parseInt(attribute.validators.length.max);
+            }
+        }
+
+        return validationAttrs;
     };
 
     // Helper function to get proper display name
@@ -117,7 +166,49 @@ export const PersonalInfo = () => {
         const isReadOnly = attribute.readOnly || attribute.name === 'username';
         const inputType = getInputType(attribute);
         const displayName = getDisplayName(attribute);
+        const validationAttrs = getValidationAttributes(attribute);
 
+        // Render select field for options-based attributes
+        if (inputType === 'select') {
+            const options = getSelectOptions(attribute);
+            return (
+                <SelectField
+                    key={attribute.name}
+                    label={displayName}
+                    id={attribute.name}
+                    name={attribute.name}
+                    value={fieldValue}
+                    options={options}
+                    required={attribute.required}
+                    readOnly={isReadOnly}
+                    placeholder={!attribute.required ? `Select ${displayName.toLowerCase()}...` : undefined}
+                    onChange={(e) => updateFieldValue(attribute.name, e.target.value)}
+                    layout="horizontal"
+                />
+            );
+        }
+
+        // Render textarea field for long text content
+        if (inputType === 'textarea') {
+            return (
+                <TextAreaField
+                    key={attribute.name}
+                    label={displayName}
+                    id={attribute.name}
+                    name={attribute.name}
+                    value={fieldValue}
+                    required={attribute.required}
+                    readOnly={isReadOnly}
+                    rows={4}
+                    placeholder={`Enter ${displayName.toLowerCase()}...`}
+                    onChange={(e) => updateFieldValue(attribute.name, e.target.value)}
+                    layout="horizontal"
+                    {...validationAttrs}
+                />
+            );
+        }
+
+        // Render regular text field
         return (
             <TextField
                 key={attribute.name}
@@ -131,6 +222,7 @@ export const PersonalInfo = () => {
                 helpText={isReadOnly && attribute.name === 'username' ? t("personalInfo.usernameHelp", "Username cannot be changed") : undefined}
                 onChange={(e) => updateFieldValue(attribute.name, e.target.value)}
                 layout="horizontal"
+                {...validationAttrs}
             />
         );
     };
